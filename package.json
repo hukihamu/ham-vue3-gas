@@ -12,7 +12,9 @@
     "@google/clasp": "^2.4.2"
   },
   "devDependencies": {
-    "@types/google-apps-script": "^1.0.78"
+    "@types/google-apps-script": "^1.0.78",
+    "vue": "^3.4.5",
+    "vue-router": "^4.2.5"
   },
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",

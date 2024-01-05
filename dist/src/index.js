@@ -1,4 +1,5 @@
 import * as gas from './gas';
 import * as share from './share';
-export { gas, share };
+import * as vue from './vue';
+export { gas, share, vue };
 //# sourceMappingURL=index.js.map

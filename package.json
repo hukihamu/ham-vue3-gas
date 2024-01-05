@@ -6,9 +6,7 @@
     "build": "tsc"
   },
   "files": [
-    "dist/src",
-    "template",
-    "bin"
+    "dist/src"
   ],
   "dependencies": {
     "typescript": "^5.3.3",

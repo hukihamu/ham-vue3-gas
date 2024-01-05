@@ -16,6 +16,11 @@ type CreateOptions = {
     htmlFileName?: string
     editHtmlOutput?: (output: GoogleAppsScript.HTML.HtmlOutput) => GoogleAppsScript.HTML.HtmlOutput
     useGasAPI?: GasAPI
+    onDoGet?: (htmlOutput: GoogleAppsScript.HTML.HtmlOutput) => void
+}
+type UseScriptsOptions = {
+    onBeforeScript?: (args: any) => void
+    onAfterScript?: (returnValue: any) => void
 }
 type GasAppOptions = {
     /**
@@ -23,7 +28,7 @@ type GasAppOptions = {
      * Simultaneous executions per user	30 / user
      * Simultaneous executions per script	1,000
      */
-    useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void) => GasAppOptions
+    useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void, options: UseScriptsOptions) => GasAppOptions
     useSpreadsheetDB: () => GasAppOptions
     useSpreadsheetCache: () => GasAppOptions
 }
@@ -33,7 +38,9 @@ function createGasApp(options: CreateOptions = {}): GasAppOptions {
 
     global.doGet = () => {
         const gasHtml = HtmlService.createHtmlOutputFromFile(options.htmlFileName ?? 'index')
-        return options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        const htmlOutput = options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        if (options.onDoGet) options.onDoGet(htmlOutput)
+        return htmlOutput
     }
     useGasAPI = options.useGasAPI ?? {}
 
@@ -41,10 +48,15 @@ function createGasApp(options: CreateOptions = {}): GasAppOptions {
 }
 
 const gasAppOptions: GasAppOptions = {
-    useScripts<T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void) {
+    useScripts<T extends AsyncScriptType<BaseScriptType>>(
+        scripts: T,
+        initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void,
+        options: UseScriptsOptions = {}) {
         function wrapperScript<K extends keyof T>(name: Exclude<K, ''>): WrapperScript<T[K]> {
             return async (args: any) => {
+                if (options.onBeforeScript) options.onBeforeScript(args)
                 const returnValue = await scripts[name](args)
+                if (options.onAfterScript) options.onAfterScript(returnValue)
                 return {json: JSON.stringify(returnValue)}
             }
         }

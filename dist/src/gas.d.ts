@@ -2,7 +2,6 @@
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
-/// <reference types="google-apps-script" />
 import { BaseScriptType } from './share';
 export { createGasApp, AsyncScriptType, useProperties };
 /**
@@ -17,6 +16,11 @@ type CreateOptions = {
     htmlFileName?: string;
     editHtmlOutput?: (output: GoogleAppsScript.HTML.HtmlOutput) => GoogleAppsScript.HTML.HtmlOutput;
     useGasAPI?: GasAPI;
+    onDoGet?: (htmlOutput: GoogleAppsScript.HTML.HtmlOutput) => void;
+};
+type UseScriptsOptions = {
+    onBeforeScript?: (args: any) => void;
+    onAfterScript?: (returnValue: any) => void;
 };
 type GasAppOptions = {
     /**
@@ -26,7 +30,7 @@ type GasAppOptions = {
      */
     useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: {
         [K in keyof T]?: WrapperScript<T[K]>;
-    }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>) => WrapperScript<T[K]>) => void) => GasAppOptions;
+    }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>) => WrapperScript<T[K]>) => void, options: UseScriptsOptions) => GasAppOptions;
     useSpreadsheetDB: () => GasAppOptions;
     useSpreadsheetCache: () => GasAppOptions;
 };

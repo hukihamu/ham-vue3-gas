@@ -3,16 +3,23 @@ let useGasAPI = {};
 function createGasApp(options = {}) {
     global.doGet = () => {
         const gasHtml = HtmlService.createHtmlOutputFromFile(options.htmlFileName ?? 'index');
-        return options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1');
+        const htmlOutput = options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1');
+        if (options.onDoGet)
+            options.onDoGet(htmlOutput);
+        return htmlOutput;
     };
     useGasAPI = options.useGasAPI ?? {};
     return gasAppOptions;
 }
 const gasAppOptions = {
-    useScripts(scripts, initGlobal) {
+    useScripts(scripts, initGlobal, options = {}) {
         function wrapperScript(name) {
             return async (args) => {
+                if (options.onBeforeScript)
+                    options.onBeforeScript(args);
                 const returnValue = await scripts[name](args);
+                if (options.onAfterScript)
+                    options.onAfterScript(returnValue);
                 return { json: JSON.stringify(returnValue) };
             };
         }

@@ -24,7 +24,7 @@ function createGasRouter(routes) {
 function useScripts() {
     return {
         send(name, args) {
-            if (window.google.script.run) {
+            if (window.google) {
                 return new Promise((resolve, reject) => {
                     const run = window.google.script.run
                         .withSuccessHandler(it => resolve(JSON.parse(it.json)))

@@ -62,7 +62,7 @@ function createGasRouter(routes: RouteRecordRaw[]) {
 function useScripts<T extends BaseScriptType>() {
     return {
         send<K extends keyof T>(name: Exclude<K, ''>, args?: Parameters<T[K]>[0]): Promise<ReturnType<T[K]>> {
-            if (window.google.script.run) {
+            if (window.google) {
                 return new Promise((resolve, reject) => {
                     const run = window.google.script.run
                         .withSuccessHandler(it => resolve(JSON.parse(it.json)))

@@ -30,21 +30,6 @@ declare namespace window {
         }
     }
 }
-function initGoogleScript() {
-    if (!window.google) {
-        window.google = {
-            // @ts-ignore
-            script: {
-                url: {
-                    getLocation(){}
-                },
-                history: {
-                    replace() {},
-                }
-            }
-        }
-    }
-}
 type CreateOptions = {
     usePlugin?: (app: App<Element>) => App<Element>
     mountContainer?: string
@@ -52,28 +37,29 @@ type CreateOptions = {
     vueMainTemplate?: string
 }
 function createGasRouter(routes: RouteRecordRaw[]) {
-    initGoogleScript()
+
     const router = createRouter({
         history: createWebHistory(),
         routes
     })
-    const userCodeAppPanel = router.beforeEach(route => {
-        userCodeAppPanel()
-        return route.fullPath !== '/userCodeAppPanel'
-    })
-    router.afterEach(route => {
-        window.google.script.history.replace(undefined, route.query, route.path)
-    })
-    window.google.script.url.getLocation(location => {
-        const path = location.hash ? location.hash : '/'
-        const query = location.parameter
-        router.replace({ path, query }).then()
-    })
+    if (window.google) {
+        const userCodeAppPanel = router.beforeEach(route => {
+            userCodeAppPanel()
+            return route.fullPath !== '/userCodeAppPanel'
+        })
+        router.afterEach(route => {
+            window.google.script.history.replace(undefined, route.query, route.path)
+        })
+        window.google.script.url.getLocation(location => {
+            const path = location.hash ? location.hash : '/'
+            const query = location.parameter
+            router.replace({ path, query }).then()
+        })
+    }
     return router
 }
 
 function useScripts<T extends BaseScriptType>() {
-    initGoogleScript()
     return {
         send<K extends keyof T>(name: Exclude<K, ''>, args?: Parameters<T[K]>[0]): Promise<ReturnType<T[K]>> {
             if (window.google.script.run) {

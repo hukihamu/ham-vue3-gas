@@ -1,6 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
 export { createGasRouter, useScripts };
+function initGoogleScript() {
+    if (!window.google) {
+        window.google = {
+            // @ts-ignore
+            script: {
+                url: {
+                    getLocation() { }
+                },
+                history: {
+                    replace() { },
+                }
+            }
+        };
+    }
+}
 function createGasRouter(routes) {
+    initGoogleScript();
     const router = createRouter({
         history: createWebHistory(),
         routes
@@ -20,19 +36,29 @@ function createGasRouter(routes) {
     return router;
 }
 function useScripts() {
+    initGoogleScript();
     return {
         send(name, args) {
-            return new Promise((resolve, reject) => {
-                const run = window.google.script.run
-                    .withSuccessHandler(it => resolve(JSON.parse(it.json)))
-                    .withFailureHandler(error => reject(error))[name];
-                if (run) {
-                    run(args);
-                }
-                else {
-                    reject(`not found GasScript: ${name} \nset "useScripts"`);
-                }
-            });
+            if (window.google.script.run) {
+                return new Promise((resolve, reject) => {
+                    const run = window.google.script.run
+                        .withSuccessHandler(it => resolve(JSON.parse(it.json)))
+                        .withFailureHandler(error => reject(error))[name];
+                    if (run) {
+                        run(args);
+                    }
+                    else {
+                        reject(`not found GasScript: ${name} \nset "useScripts"`);
+                    }
+                });
+            }
+            else {
+                // dev server
+                return fetch(`http://localhost:3001/${name.toString()}`, {
+                    method: 'post',
+                    body: JSON.stringify(args)
+                }).then(it => it.json()).then(it => JSON.parse(it.json));
+            }
         }
     };
 }

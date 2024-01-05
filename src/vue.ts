@@ -9,16 +9,8 @@ declare namespace window {
         namespace script {
             interface Run {
                 [name: string]: (...args: any) => void
-
                 withFailureHandler(callback: (error: Error, object?: any) => void): Run
-
                 withSuccessHandler(callback: (value: any, object?: any) => void): Run
-
-                /**
-                 * サーバには送らず、ハンドラーに渡す値をセットする
-                 * @param object
-                 */
-                withUserObject(object: any): Run
             }
 
             const run: Run
@@ -30,25 +22,25 @@ declare namespace window {
             }
 
             namespace history {
-                function push(stateObject?: any, params?: { [key: string]: any }, hash?: string): void
-
                 function replace(stateObject?: any, params?: { [key: string]: any }, hash?: string): void
-
-                function setChangeHandler(callback: (event: { state: any; location: UrlLocation }) => void): void
-            }
-            namespace host {
-                function close(): void
-
-                function setHeight(height: number): void
-
-                function setWidth(width: number): void
-
-                namespace editor {
-                    function focus(): void
-                }
             }
             namespace url {
                 function getLocation(callback: (location: UrlLocation) => void): void
+            }
+        }
+    }
+}
+function initGoogleScript() {
+    if (!window.google) {
+        window.google = {
+            // @ts-ignore
+            script: {
+                url: {
+                    getLocation(){}
+                },
+                history: {
+                    replace() {},
+                }
             }
         }
     }
@@ -60,6 +52,7 @@ type CreateOptions = {
     vueMainTemplate?: string
 }
 function createGasRouter(routes: RouteRecordRaw[]) {
+    initGoogleScript()
     const router = createRouter({
         history: createWebHistory(),
         routes
@@ -80,18 +73,27 @@ function createGasRouter(routes: RouteRecordRaw[]) {
 }
 
 function useScripts<T extends BaseScriptType>() {
+    initGoogleScript()
     return {
         send<K extends keyof T>(name: Exclude<K, ''>, args?: Parameters<T[K]>[0]): Promise<ReturnType<T[K]>> {
-            return new Promise((resolve, reject) => {
-                const run = window.google.script.run
-                    .withSuccessHandler(it => resolve(JSON.parse(it.json)))
-                    .withFailureHandler(error => reject(error))[name as string]
-                if (run) {
-                    run(args)
-                } else {
-                    reject(`not found GasScript: ${name as string} \nset "useScripts"`)
-                }
-            })
+            if (window.google.script.run) {
+                return new Promise((resolve, reject) => {
+                    const run = window.google.script.run
+                        .withSuccessHandler(it => resolve(JSON.parse(it.json)))
+                        .withFailureHandler(error => reject(error))[name as string]
+                    if (run) {
+                        run(args)
+                    } else {
+                        reject(`not found GasScript: ${name as string} \nset "useScripts"`)
+                    }
+                })
+            } else {
+                // dev server
+                return fetch(`http://localhost:3001/${name.toString()}`, {
+                    method: 'post',
+                    body: JSON.stringify(args)
+                }).then(it => it.json()).then(it => JSON.parse(it.json))
+            }
         }
     }
 }

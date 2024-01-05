@@ -16,14 +16,5 @@
   },
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
-  "exports": {
-    "./gas": {
-      "import": {
-        "default": "./dist/src/gas.js",
-        "types": "./dist/src/gas.d.ts"
-      }
-    },
-    "./share": "./dist/src/share.js"
-  },
   "private": true
 }

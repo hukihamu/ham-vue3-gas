@@ -3,6 +3,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "typescript": "^5.3.3",
     "@google/clasp": "^2.4.2"

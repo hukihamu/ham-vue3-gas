@@ -14,13 +14,13 @@ function createGasApp(options = {}) {
     return gasAppOptions;
 }
 const gasAppOptions = {
-    useScripts(scripts, initGlobal, options = {}) {
+    useScripts(scripts, initGlobal, options) {
         function wrapperScript(name) {
             return async (args) => {
-                if (options.onBeforeScript)
+                if (options?.onBeforeScript)
                     options.onBeforeScript(args);
                 const returnValue = await scripts[name](args);
-                if (options.onAfterScript)
+                if (options?.onAfterScript)
                     options.onAfterScript(returnValue);
                 return { json: JSON.stringify(returnValue) };
             };

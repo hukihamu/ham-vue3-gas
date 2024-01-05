@@ -32,7 +32,7 @@ type GasAppOptions = {
      */
     useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: {
         [K in keyof T]?: WrapperScript<T[K]>;
-    }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>) => WrapperScript<T[K]>) => void, options: UseScriptsOptions) => GasAppOptions;
+    }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>) => WrapperScript<T[K]>) => void, options?: UseScriptsOptions) => GasAppOptions;
     useSpreadsheetDB: () => GasAppOptions;
     useSpreadsheetCache: () => GasAppOptions;
 };

@@ -29,14 +29,14 @@ type GasAppOptions = {
      * Simultaneous executions per user	30 / user
      * Simultaneous executions per script	1,000
      */
-    useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void, options: UseScriptsOptions) => GasAppOptions
+    useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void, options?: UseScriptsOptions) => GasAppOptions
     useSpreadsheetDB: () => GasAppOptions
     useSpreadsheetCache: () => GasAppOptions
 }
 let useGasAPI: GasAPI = {}
 
-function createGasApp(options: CreateOptions = {}): GasAppOptions {
-
+function createGasApp(options?: CreateOptions): GasAppOptions {
+    if (!options) options = {}
     global.doGet = () => {
         const gasHtml = HtmlService.createHtmlOutputFromFile(options.htmlFileName ?? 'index')
         const htmlOutput = options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')

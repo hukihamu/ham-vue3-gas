@@ -51,12 +51,12 @@ const gasAppOptions: GasAppOptions = {
     useScripts<T extends AsyncScriptType<BaseScriptType>>(
         scripts: T,
         initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void,
-        options?: UseScriptsOptions) {
+        options: UseScriptsOptions = {}) {
         function wrapperScript<K extends keyof T>(name: Exclude<K, ''>): WrapperScript<T[K]> {
             return async (args: any) => {
-                if (options?.onBeforeScript) options.onBeforeScript(args)
+                if (options.onBeforeScript) options.onBeforeScript(args)
                 const returnValue = await scripts[name](args)
-                if (options?.onAfterScript) options.onAfterScript(returnValue)
+                if (options.onAfterScript) options.onAfterScript(returnValue)
                 return {json: JSON.stringify(returnValue)}
             }
         }

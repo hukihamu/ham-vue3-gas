@@ -1,11 +1,13 @@
 {
   "name": "ham-vue3-gas",
+  "type": "module",
   "scripts": {
     "build": "tsc"
   },
   "files": [
     "dist/src",
-    "template"
+    "template",
+    "bin"
   ],
   "dependencies": {
     "typescript": "^5.3.3",

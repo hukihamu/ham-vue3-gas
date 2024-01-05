@@ -16,7 +16,25 @@
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
   },
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./gas": "./dist/src/gas.js",
+    "./gas/notion": "./dist/src/gas.js",
+    "./gas/spreadsheet": "./dist/src/gas/spreadsheet.js",
+    "./gas/ssCache": "./dist/src/gas/ssCache.js",
+    "./vue": "./dist/src/vue.js",
+    "./share": "./dist/src/share.js",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "gas": ["dist/src/gas"],
+      "gas/notion": ["dist/src/gas/notion"],
+      "gas/spreadsheet": ["dist/src/gas/spreadsheet"],
+      "gas/ssCache": ["dist/src/gas/ssCache"],
+      "vue": ["dist/src/vue"],
+      "share": ["dist/src/share"]
+    }
+  },
   "private": true
 }

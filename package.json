@@ -15,7 +15,10 @@
     "@types/google-apps-script": "^1.0.78"
   },
   "exports": {
-    "./gas": "./dist/src/gas.js",
+    "./gas": {
+      "default": "./dist/src/gas.js",
+      "types": "./dist/src/gas.d.ts"
+    },
     "./share": "./dist/src/share.js"
   },
   "private": true

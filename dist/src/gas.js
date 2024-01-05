@@ -1,4 +1,6 @@
-export { createGasApp, useProperties };
+import * as notion from './gas/notion';
+import * as spreadsheet from './gas/spreadsheet';
+export { createGasApp, useProperties, notion, spreadsheet };
 let useGasAPI = {};
 function createGasApp(options = {}) {
     global.doGet = () => {

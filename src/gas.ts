@@ -1,6 +1,7 @@
 import {BaseScriptType} from './share'
-
-export {createGasApp, AsyncScriptType, useProperties}
+import * as notion from './gas/notion'
+import * as spreadsheet from './gas/spreadsheet'
+export {createGasApp, AsyncScriptType, useProperties, notion, spreadsheet}
 
 declare let global: { [name: string]: unknown }
 

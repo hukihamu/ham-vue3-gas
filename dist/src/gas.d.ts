@@ -3,7 +3,9 @@
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
 import { BaseScriptType } from './share';
-export { createGasApp, AsyncScriptType, useProperties };
+import * as notion from './gas/notion';
+import * as spreadsheet from './gas/spreadsheet';
+export { createGasApp, AsyncScriptType, useProperties, notion, spreadsheet };
 /**
  * URL Fetch calls	20,000 / day
  */

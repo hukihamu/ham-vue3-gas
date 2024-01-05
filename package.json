@@ -14,13 +14,9 @@
   "devDependencies": {
     "@types/google-apps-script": "^1.0.78"
   },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "exports": {
-    ".": {
-      "import": {
-        "default": "./dist/src/index.js",
-        "types": "./dist/src/index.d.ts"
-      }
-    },
     "./gas": {
       "import": {
         "default": "./dist/src/gas.js",

@@ -3,11 +3,12 @@
 import {program} from 'commander'
 import * as path from 'path'
 import * as fs from 'fs-extra'
+import { fileURLToPath } from 'url';
 
 program.name('create-ham-vue3-gas').action(
   () => {
       console.log('Initializing ham-vue3-gas')
-      const rootPath = path.join(__dirname, '../../../')
+      const rootPath = path.resolve(process.cwd())
       fs.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
       fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
       fs.copySync(path.join(__dirname, 'template/shared'), path.join(rootPath, 'shared'))

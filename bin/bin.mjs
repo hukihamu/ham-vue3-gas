@@ -14,7 +14,6 @@ const templateDir = path.resolve(
   '../..',
   `template`,
 )
-fs.emptyDir(root)
 
 fs.copySync(path.join(templateDir, '.clasp.json'), path.join(root, '.clasp.json'))
 fs.copySync(path.join(templateDir, 'package.json'), path.join(root, 'package.json'))

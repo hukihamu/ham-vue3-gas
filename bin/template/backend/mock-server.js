@@ -13,9 +13,7 @@ fs.watchFile('../dist/gas.js', () => {
   const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
   gas = eval(`let globalThis = {};` + rawText + 'globalThis')
 })
-childProcess.exec('webpack --watch --mode development', (error) => {
-  console.error(error)
-})
+childProcess.spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
 // mock start
 // TODO
 const SpreadsheetApp = {}

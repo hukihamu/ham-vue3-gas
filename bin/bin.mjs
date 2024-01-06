@@ -4,7 +4,7 @@ import * as path from 'path'
 import fsExtra from 'fs-extra'
 import fs from 'fs'
 import {fileURLToPath} from 'url'
-import {execSync} from 'child_process'
+import {spawnSync} from 'child_process'
 
 console.log('Create ham-vue3-gas')
 const rootPath = path.resolve(process.cwd())
@@ -25,4 +25,4 @@ fsExtra.copySync(path.join(__dirname, 'template/frontend'), path.join(rootPath, 
 fsExtra.copySync(path.join(__dirname, 'template/backend'), path.join(rootPath, 'backend'))
 console.log('Successfully created')
 console.log('npm install')
-execSync('npm install')
+spawnSync('npm', ['install'], {stdio: 'inherit'})

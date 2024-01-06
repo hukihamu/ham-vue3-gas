@@ -20,7 +20,7 @@
     "vue-router": "^4.2.5"
   },
   "bin": {
-    "create-ham-vue3-gas": "bin/bin.js"
+    "create-ham-vue3-gas": "bin/bin.mjs"
   },
   "exports": {
     ".": "./dist/src/index.js",

@@ -2,5 +2,5 @@
 
 ## install
 ```powershell
-npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git
+npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <package-name?>
 ```

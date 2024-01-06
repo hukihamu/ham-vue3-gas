@@ -1,16 +1,28 @@
-import {program} from 'commander'
+
 import * as path from 'path'
 import * as fs from 'fs-extra'
+import {fileURLToPath} from 'node:url'
 
-program.name('create-ham-vue3-gas').action(
-  () => {
-      console.log('Initializing ham-vue3-gas')
-      const rootPath = path.join(__dirname, '../../../')
-      fs.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
-      fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
-      fs.copySync(path.join(__dirname, 'template/shared'), path.join(rootPath, 'shared'))
-      fs.copySync(path.join(__dirname, 'template/frontend'), path.join(rootPath, 'frontend'))
-      fs.copySync(path.join(__dirname, 'template/backend'), path.join(rootPath, 'backend'))
-  }
+const cwd = process.cwd()
+const argTargetDir = formatTargetDir(process.argv[0])
+const defaultTargetDir = 'ham-vue3-gas-project'
+const targetDir = argTargetDir || defaultTargetDir
+const root = path.join(cwd, targetDir)
+
+const templateDir = path.resolve(
+  fileURLToPath(import.meta.url),
+  '../..',
+  `template`,
 )
-program.parse(process.argv)
+fs.emptyDir(root)
+
+fs.copySync(path.join(templateDir, '.clasp.json'), path.join(root, '.clasp.json'))
+fs.copySync(path.join(templateDir, 'package.json'), path.join(root, 'package.json'))
+fs.copySync(path.join(templateDir, 'shared'), path.join(root, 'shared'))
+fs.copySync(path.join(templateDir, 'frontend'), path.join(root, 'frontend'))
+fs.copySync(path.join(templateDir, 'backend'), path.join(root, 'backend'))
+
+
+function formatTargetDir(targetDir) {
+      return targetDir?.trim().replace(/\/+$/g, '')
+}

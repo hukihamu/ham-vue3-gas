@@ -4,6 +4,7 @@ import {program} from 'commander'
 import * as path from 'path'
 import fs from 'fs-extra'
 import {fileURLToPath} from 'url'
+import {execSync} from 'child_process'
 
 program.name('create-ham-vue3-gas').action(
   () => {
@@ -16,6 +17,9 @@ program.name('create-ham-vue3-gas').action(
     fs.copySync(path.join(__dirname, 'template/frontend'), path.join(rootPath, 'frontend'))
     fs.copySync(path.join(__dirname, 'template/backend'), path.join(rootPath, 'backend'))
     console.log('Successfully created')
+    console.log('npm install')
+    execSync('npm install')
+
   }
 )
 program.parse(process.argv)

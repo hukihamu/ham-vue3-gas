@@ -2,7 +2,7 @@ const express = require('express')
 const fs = require('fs')
 const cors = require('cors')
 const path = require('path')
-const childProcess = require('child_process')
+const spawn = require('cross-spawn')
 
 childProcess.execSync('webpack --mode development')
 
@@ -13,7 +13,7 @@ fs.watchFile('../dist/gas.js', () => {
   const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
   gas = eval(`let globalThis = {};` + rawText + 'globalThis')
 })
-childProcess.spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
+spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
 // mock start
 // TODO
 const SpreadsheetApp = {}

@@ -11,7 +11,8 @@
   "dependencies": {
     "typescript": "^5.3.3",
     "@google/clasp": "^2.4.2",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "cross-spawn": "^7.0.3"
   },
   "devDependencies": {
     "@types/google-apps-script": "^1.0.78",

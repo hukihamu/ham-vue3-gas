@@ -9,6 +9,7 @@ program.name('create-ham-vue3-gas').action(
   () => {
     console.log('Create ham-vue3-gas')
     const rootPath = path.resolve(process.cwd())
+    const __dirname = path.dirname(fileURLToPath(import.meta.url))
     fs.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
     fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
     fs.copySync(path.join(__dirname, 'template/shared'), path.join(rootPath, 'shared'))

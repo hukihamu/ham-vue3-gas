@@ -2,11 +2,11 @@
   "name": "@ham-vue3-gas/shared",
   "scripts": {
     "build": "tsc && npm install",
-    "build:watch": "chokidar \"src/**/*.ts\" -c \"tsc && npm install\" -p",
+    "build:watch": "nodemon --ext ts --watch src --exec \"tsc && npm install\"",
     "dev": "npm run build:watch"
   },
   "devDependencies": {
-    "chokidar-cli": "^3.0.0"
+    "nodemon": "^3.0.2"
   },
   "exports": {
     "./scripts": "./dist/src/scripts.js"

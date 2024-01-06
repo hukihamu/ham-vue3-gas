@@ -2,7 +2,7 @@
 
 import {program} from 'commander'
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import {fileURLToPath} from 'url'
 
 program.name('create-ham-vue3-gas').action(

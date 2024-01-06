@@ -12,14 +12,17 @@
   "dependencies": {
     "typescript": "^5.3.3",
     "@google/clasp": "^2.4.2",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "commander": "^11.1.0"
   },
   "devDependencies": {
     "@types/google-apps-script": "^1.0.78",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
   },
-  "bin": "./bin/bin.js",
+  "bin": {
+    "create-ham-vue3-gas": "./bin/bin.mjs"
+  },
   "exports": {
     ".": "./dist/src/index.js",
     "./gas": "./dist/src/gas.js",

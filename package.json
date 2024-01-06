@@ -5,16 +5,22 @@
     "build": "tsc"
   },
   "files": [
-    "dist/src"
+    "dist/src",
+    "bin"
   ],
   "dependencies": {
     "typescript": "^5.3.3",
-    "@google/clasp": "^2.4.2"
+    "@google/clasp": "^2.4.2",
+    "commander": "11.1.0",
+    "fs-extra": "^11.2.0"
   },
   "devDependencies": {
     "@types/google-apps-script": "^1.0.78",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
+  },
+  "bin": {
+    "create-ham-vue3-gas": "bin/bin.mjs"
   },
   "exports": {
     ".": "./dist/src/index.js",
@@ -29,6 +35,5 @@
       "vue": ["dist/src/vue"],
       "share": ["dist/src/share"]
     }
-  },
-  "private": true
+  }
 }

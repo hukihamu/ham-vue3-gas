@@ -1,0 +1,15 @@
+{
+  "name": "@ham-vue3-gas/shared",
+  "scripts": {
+    "build": "tsc && npm install",
+    "build:watch": "chokidar \"src/**/*.ts\" -c \"tsc && npm install\" -p",
+    "dev": "npm run build:watch"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^3.0.0"
+  },
+  "exports": {
+    "./scripts": "./dist/src/scripts.js"
+  },
+  "private": true
+}

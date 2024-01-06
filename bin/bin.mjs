@@ -1,0 +1,16 @@
+import {program} from 'commander'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+
+program.name('create-ham-vue3-gas').action(
+  () => {
+      console.log('Initializing ham-vue3-gas')
+      const rootPath = path.join(__dirname, '../../../')
+      fs.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
+      fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
+      fs.copySync(path.join(__dirname, 'template/shared'), path.join(rootPath, 'shared'))
+      fs.copySync(path.join(__dirname, 'template/frontend'), path.join(rootPath, 'frontend'))
+      fs.copySync(path.join(__dirname, 'template/backend'), path.join(rootPath, 'backend'))
+  }
+)
+program.parse(process.argv)

@@ -39,6 +39,7 @@ function useScripts() {
             }
             else {
                 // dev server
+                // TODO 環境変数
                 return fetch(`http://localhost:3001/${name.toString()}`, {
                     method: 'post',
                     body: JSON.stringify(args)

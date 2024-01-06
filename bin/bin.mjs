@@ -10,9 +10,10 @@ console.log('Create ham-vue3-gas')
 const rootPath = path.resolve(process.cwd())
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 fsExtra.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
-if (process.argv[0]) {
+const args = process.argv.slice(2)
+if (args[0]) {
   // package-name
-  const packageName = process.argv[0].trim().replace(/\/+$/g, '')
+  const packageName = args[0].trim().replace(/\/+$/g, '')
   const packageJson = fs.readFileSync(path.join(__dirname, 'template/package.json'), 'utf8')
   fs.writeFileSync(path.join(rootPath, 'package.json'), packageJson.replace('ham-vue3-gas-project', packageName))
 } else {

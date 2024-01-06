@@ -8,12 +8,13 @@ const argTargetDir = formatTargetDir(process.argv[0])
 const defaultTargetDir = 'ham-vue3-gas-project'
 const targetDir = argTargetDir || defaultTargetDir
 const root = path.join(cwd, targetDir)
-
+console.log('root', root)
 const templateDir = path.resolve(
   fileURLToPath(import.meta.url),
   '../..',
   `template`,
 )
+console.log('templateDir', templateDir)
 
 fs.copySync(path.join(templateDir, '.clasp.json'), path.join(root, '.clasp.json'))
 fs.copySync(path.join(templateDir, 'package.json'), path.join(root, 'package.json'))

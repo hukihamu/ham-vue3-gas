@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 
 fs.writeFileSync('test.txt', 'hello world')
-
+console.log(`File "test.txt" has been successfully created.`);
 // import * as path from 'path'
 // import * as fs from 'fs-extra'
 // import {fileURLToPath} from 'node:url'

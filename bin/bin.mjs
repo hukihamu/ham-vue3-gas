@@ -12,7 +12,7 @@ program.name('create-ham-vue3-gas').action(() => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url))
   fs.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPath, '.clasp.json'))
   fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
-  fs.copySync(path.join(__dirname, 'template/package.json'), path.join(rootPath, 'package.json'))
+  fs.write(path.join(rootPath, '.gitignore'), '.idea\nnode_modules\n.clasp.json\nfrontend/node_modules\ndist\n')
   fs.copySync(path.join(__dirname, 'template/shared'), path.join(rootPath, 'shared'))
   fs.copySync(path.join(__dirname, 'template/frontend'), path.join(rootPath, 'frontend'))
   fs.copySync(path.join(__dirname, 'template/backend'), path.join(rootPath, 'backend'))

@@ -10,6 +10,7 @@ type GasAPI = {
     urlFetchApp?: GoogleAppsScript.URL_Fetch.UrlFetchApp
     spreadsheetApp?: GoogleAppsScript.Spreadsheet.SpreadsheetApp
     session?: GoogleAppsScript.Base.Session
+    propertiesService?: GoogleAppsScript.Properties.PropertiesService
 }
 type CreateOptions = {
     htmlFileName?: string
@@ -79,56 +80,57 @@ type WrapperScript<S extends (args: any) => any> = (args: Parameters<S>[0]) => P
  * Properties read/write	50,000 / day
  */
 function useProperties<K extends string>() {
+    const propertiesService = useGasAPI.propertiesService ?? (()=>{throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'})()
     return {
         document: {
-            getProperties: PropertiesService.getDocumentProperties().getProperties,
-            deleteAllProperties: PropertiesService.getDocumentProperties().deleteAllProperties,
-            getKeys: PropertiesService.getDocumentProperties().getKeys,
+            getProperties: propertiesService.getDocumentProperties().getProperties,
+            deleteAllProperties: propertiesService.getDocumentProperties().deleteAllProperties,
+            getKeys: propertiesService.getDocumentProperties().getKeys,
             setProperties: (properties: { K: string }) => {
-                return PropertiesService.getDocumentProperties().setProperties(properties)
+                return propertiesService.getDocumentProperties().setProperties(properties)
             },
             getProperty: (key: K) => {
-                return PropertiesService.getDocumentProperties().getProperty(key)
+                return propertiesService.getDocumentProperties().getProperty(key)
             },
             setProperty: (key: K, value: string) => {
-                return PropertiesService.getDocumentProperties().setProperty(key, value)
+                return propertiesService.getDocumentProperties().setProperty(key, value)
             },
             deleteProperty: (key: K) => {
-                PropertiesService.getDocumentProperties().deleteProperty(key)
+                propertiesService.getDocumentProperties().deleteProperty(key)
             },
         },
         script: {
-            getProperties: PropertiesService.getScriptProperties().getProperties,
-            deleteAllProperties: PropertiesService.getScriptProperties().deleteAllProperties,
-            getKeys: PropertiesService.getScriptProperties().getKeys,
+            getProperties: propertiesService.getScriptProperties().getProperties,
+            deleteAllProperties: propertiesService.getScriptProperties().deleteAllProperties,
+            getKeys: propertiesService.getScriptProperties().getKeys,
             setProperties: (properties: { K: string }) => {
-                return PropertiesService.getScriptProperties().setProperties(properties)
+                return propertiesService.getScriptProperties().setProperties(properties)
             },
             getProperty: (key: K) => {
-                return PropertiesService.getScriptProperties().getProperty(key)
+                return propertiesService.getScriptProperties().getProperty(key)
             },
             setProperty: (key: K, value: string) => {
-                return PropertiesService.getScriptProperties().setProperty(key, value)
+                return propertiesService.getScriptProperties().setProperty(key, value)
             },
             deleteProperty: (key: K) => {
-                PropertiesService.getScriptProperties().deleteProperty(key)
+                propertiesService.getScriptProperties().deleteProperty(key)
             },
         },
         user: {
-            getProperties: PropertiesService.getUserProperties().getProperties,
-            deleteAllProperties: PropertiesService.getUserProperties().deleteAllProperties,
-            getKeys: PropertiesService.getUserProperties().getKeys,
+            getProperties: propertiesService.getUserProperties().getProperties,
+            deleteAllProperties: propertiesService.getUserProperties().deleteAllProperties,
+            getKeys: propertiesService.getUserProperties().getKeys,
             setProperties: (properties: { K: string }) => {
-                return PropertiesService.getUserProperties().setProperties(properties)
+                return propertiesService.getUserProperties().setProperties(properties)
             },
             getProperty: (key: K) => {
-                return PropertiesService.getUserProperties().getProperty(key)
+                return propertiesService.getUserProperties().getProperty(key)
             },
             setProperty: (key: K, value: string) => {
-                return PropertiesService.getUserProperties().setProperty(key, value)
+                return propertiesService.getUserProperties().setProperty(key, value)
             },
             deleteProperty: (key: K) => {
-                PropertiesService.getUserProperties().deleteProperty(key)
+                propertiesService.getUserProperties().deleteProperty(key)
             },
         }
     }

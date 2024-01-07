@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteSingleFile } from "vite-plugin-singlefile"
 import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify'
-import {execSync} from 'child_process'
 
 
 // https://vitejs.dev/config/

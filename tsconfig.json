@@ -9,6 +9,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
+    "types": ["google-apps-script"],
     "allowSyntheticDefaultImports": true
   },
   "include": [

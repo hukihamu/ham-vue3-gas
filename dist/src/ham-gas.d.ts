@@ -12,6 +12,7 @@ type GasAPI = {
     urlFetchApp?: GoogleAppsScript.URL_Fetch.UrlFetchApp;
     spreadsheetApp?: GoogleAppsScript.Spreadsheet.SpreadsheetApp;
     session?: GoogleAppsScript.Base.Session;
+    propertiesService?: GoogleAppsScript.Properties.PropertiesService;
 };
 type CreateOptions = {
     htmlFileName?: string;

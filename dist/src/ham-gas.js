@@ -88,56 +88,58 @@ var gasAppOptions = {
  * Properties read/write	50,000 / day
  */
 function useProperties() {
+    var _a;
+    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () { throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'; })();
     return {
         document: {
-            getProperties: PropertiesService.getDocumentProperties().getProperties,
-            deleteAllProperties: PropertiesService.getDocumentProperties().deleteAllProperties,
-            getKeys: PropertiesService.getDocumentProperties().getKeys,
+            getProperties: propertiesService.getDocumentProperties().getProperties,
+            deleteAllProperties: propertiesService.getDocumentProperties().deleteAllProperties,
+            getKeys: propertiesService.getDocumentProperties().getKeys,
             setProperties: function (properties) {
-                return PropertiesService.getDocumentProperties().setProperties(properties);
+                return propertiesService.getDocumentProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return PropertiesService.getDocumentProperties().getProperty(key);
+                return propertiesService.getDocumentProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return PropertiesService.getDocumentProperties().setProperty(key, value);
+                return propertiesService.getDocumentProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                PropertiesService.getDocumentProperties().deleteProperty(key);
+                propertiesService.getDocumentProperties().deleteProperty(key);
             },
         },
         script: {
-            getProperties: PropertiesService.getScriptProperties().getProperties,
-            deleteAllProperties: PropertiesService.getScriptProperties().deleteAllProperties,
-            getKeys: PropertiesService.getScriptProperties().getKeys,
+            getProperties: propertiesService.getScriptProperties().getProperties,
+            deleteAllProperties: propertiesService.getScriptProperties().deleteAllProperties,
+            getKeys: propertiesService.getScriptProperties().getKeys,
             setProperties: function (properties) {
-                return PropertiesService.getScriptProperties().setProperties(properties);
+                return propertiesService.getScriptProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return PropertiesService.getScriptProperties().getProperty(key);
+                return propertiesService.getScriptProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return PropertiesService.getScriptProperties().setProperty(key, value);
+                return propertiesService.getScriptProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                PropertiesService.getScriptProperties().deleteProperty(key);
+                propertiesService.getScriptProperties().deleteProperty(key);
             },
         },
         user: {
-            getProperties: PropertiesService.getUserProperties().getProperties,
-            deleteAllProperties: PropertiesService.getUserProperties().deleteAllProperties,
-            getKeys: PropertiesService.getUserProperties().getKeys,
+            getProperties: propertiesService.getUserProperties().getProperties,
+            deleteAllProperties: propertiesService.getUserProperties().deleteAllProperties,
+            getKeys: propertiesService.getUserProperties().getKeys,
             setProperties: function (properties) {
-                return PropertiesService.getUserProperties().setProperties(properties);
+                return propertiesService.getUserProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return PropertiesService.getUserProperties().getProperty(key);
+                return propertiesService.getUserProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return PropertiesService.getUserProperties().setProperty(key, value);
+                return propertiesService.getUserProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                PropertiesService.getUserProperties().deleteProperty(key);
+                propertiesService.getUserProperties().deleteProperty(key);
             },
         }
     };

@@ -1,9 +1,9 @@
 {
-  "name": "@ham-vue3-gas/gas",
   "private": true,
   "scripts": {
     "dev": "node mock-server.js",
     "build": "webpack",
+    "build-dev": "webpack --mode development",
     "build:watch": "webpack --watch"
   },
   "devDependencies": {

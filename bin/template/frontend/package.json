@@ -1,5 +1,4 @@
 {
-  "name": "@ham-vue3-gas/vue",
   "private": true,
   "scripts": {
     "dev": "vite --force",

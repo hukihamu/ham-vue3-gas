@@ -9,7 +9,7 @@ export const router = createGasRouter([
         component: Index
     },
     {
-        path: '/Error',
+        path: '/error',
         component: Error
     }
 ])

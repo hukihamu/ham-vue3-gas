@@ -1,4 +1,4 @@
-import {BaseScriptType} from './share'
+import {BaseScriptType} from './ham-share'
 export {createGasApp, AsyncScriptType, useProperties}
 
 declare let global: { [name: string]: unknown }

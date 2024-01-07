@@ -2,7 +2,8 @@
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
-import { BaseScriptType } from './share';
+/// <reference types="google-apps-script" />
+import { BaseScriptType } from './ham-share';
 export { createGasApp, AsyncScriptType, useProperties };
 /**
  * URL Fetch calls	20,000 / day

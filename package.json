@@ -21,17 +21,16 @@
   },
   "bin": "bin/bin.mjs",
   "exports": {
-    ".": "./dist/src/index.js",
-    "./gas": "./dist/src/gas.js",
-    "./vue": "./dist/src/vue.js",
-    "./share": "./dist/src/share.js",
+    "./gas": "./dist/src/ham-gas.js",
+    "./vue": "./dist/src/ham-vue.js",
+    "./share": "./dist/src/ham-share.js",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "gas": ["dist/src/gas"],
-      "vue": ["dist/src/vue"],
-      "share": ["dist/src/share"]
+      "gas": ["dist/src/ham-gas"],
+      "vue": ["dist/src/ham-vue"],
+      "share": ["dist/src/ham-share"]
     }
   }
 }

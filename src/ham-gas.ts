@@ -99,7 +99,7 @@ type WrapperScript<S extends (args: any) => any> = (args: Parameters<S>[0]) => P
  * Properties read/write	50,000 / day
  */
 function useProperties<K extends string>() {
-    const propertiesService = useGasAPI.propertiesService ?? (()=>{throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'})()
+    const propertiesService = useGasAPI.propertiesService ?? (()=>{throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'})()
     return {
         document: {
             getProperties: propertiesService.getDocumentProperties().getProperties,
@@ -187,7 +187,7 @@ export class NotionClient {
         if (useGasAPI.urlFetchApp) {
             this._urlFetchApp = useGasAPI.urlFetchApp
         } else {
-            throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'
+            throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'
         }
     }
     // static createToken(): string{
@@ -400,7 +400,7 @@ export abstract class SSRepository<E extends SSEntity> {
      * @protected
      */
     protected readonly spreadSheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp = useGasAPI.spreadsheetApp ?? (() => {
-        throw 'not found SpreadsheetApp. run "createGasApp({useGasAPI})"'
+        throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"'
     })()
     /**
      * トランザクションタイプ(LockService参照) default: user
@@ -568,7 +568,7 @@ type LockType = 'user' | 'script' | 'none'
 
 export function spreadsheetCache(spreadsheetId: string,
                         expirationInSeconds?: number) {
-    if (!useGasAPI.spreadsheetApp) throw 'not found SpreadsheetApp. run "createGasApp({useGasAPI})"'
+    if (!useGasAPI.spreadsheetApp) throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"'
     const spreadsheet = useGasAPI.spreadsheetApp.openById(spreadsheetId)
     const tempSheet = spreadsheet.getSheetByName('cache')
     const sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache')

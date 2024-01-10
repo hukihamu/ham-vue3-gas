@@ -9,6 +9,7 @@
   "scripts": {
     "update-ham-vue3-gas": "npm update ham-vue3-gas",
     "cp-manifest": "cpy ./backend/manifest/appsscript.json dist --flat",
+    "build-all": "npm run build -w shared && npm run build -w frontend && npm run build -w backend",
     "push": "npm run cp-manifest && clasp push",
 
     "push:watch": "clasp push --watch",

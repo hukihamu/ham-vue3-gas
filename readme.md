@@ -8,7 +8,7 @@
 2. move to project folder
 3. install
 ```powershell
-npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <package-name?>
+npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <project-name?>
 ```
 4. `.clasp.json`の`scriptId`をデプロイ先のスクリプトIDに変更する
 5. enjoy(^^♪)

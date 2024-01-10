@@ -75,12 +75,32 @@ var gasAppOptions = {
         initGlobal(global, wrapperScript);
         return this;
     },
-    useSpreadsheetCache: function () {
-        // TODO
-        return this;
-    },
-    useSpreadsheetDB: function () {
-        // TODO
+    /**
+    * SpreadsheetをDBとして利用する<br>
+    * 作成したRepositoryを登録する
+    */
+    useSpreadsheetDB: function (initGlobal) {
+        var repositoryList = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            repositoryList[_i - 1] = arguments[_i];
+        }
+        var initTables = function () {
+            for (var _i = 0, repositoryList_1 = repositoryList; _i < repositoryList_1.length; _i++) {
+                var repository = repositoryList_1[_i];
+                try {
+                    console.info('create instances');
+                    var r = new repository();
+                    var name_1 = r['tableName'];
+                    console.info('start', name_1);
+                    r.initTable();
+                    console.info('success', name_1);
+                }
+                catch (e) {
+                    console.error('init spreadsheet error', e);
+                }
+            }
+        };
+        initGlobal(global, initTables);
         return this;
     },
 };
@@ -155,12 +175,12 @@ var NotionClient = /** @class */ (function () {
             throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"';
         }
     }
-    NotionClient.createToken = function () {
-        // TODO GAS Oauth2を利用する
-        //  https://qiita.com/Qnoir/items/98741f6b4266e6960b9d
-        //  https://developers.notion.com/reference/create-a-token
-        return '';
-    };
+    // static createToken(): string{
+    // TODO GAS Oauth2を利用する
+    //  https://qiita.com/Qnoir/items/98741f6b4266e6960b9d
+    //  https://developers.notion.com/reference/create-a-token
+    //     return ''
+    // }
     NotionClient.prototype.createHeaders = function () {
         return {
             Authorization: "Bearer ".concat(this._authToken),
@@ -195,20 +215,16 @@ var NotionClient = /** @class */ (function () {
             });
         });
     };
-    Object.defineProperty(NotionClient.prototype, "blocks", {
-        get: function () {
-            return {
-                append: function () { },
-                get: function () { },
-                list: function () { },
-                update: function () { },
-                delete: function () { },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
     Object.defineProperty(NotionClient.prototype, "pages", {
+        // TODO
+        // get blocks() {
+        //     return {
+        //         append(){},
+        //         get(){},
+        //         list(){},
+        //         update(){},
+        //         delete(){},}
+        // }
         get: function () {
             var _this = this;
             return {
@@ -296,42 +312,13 @@ var NotionClient = /** @class */ (function () {
                         });
                     });
                 },
-                get: function () {
-                },
-                update: function () {
-                },
-                updateProperty: function () {
-                },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(NotionClient.prototype, "users", {
-        get: function () {
-            return {
-                get: function () { },
-                list: function () { },
-                getBot: function () { },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(NotionClient.prototype, "comments", {
-        get: function () {
-            return {
-                create: function () { },
-                get: function () { },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(NotionClient.prototype, "search", {
-        get: function () {
-            return {
-                searchByTitle: function () { },
+                // TODO
+                // get() {
+                // },
+                // update() {
+                // },
+                // updateProperty() {
+                // },
             };
         },
         enumerable: false,
@@ -443,7 +430,7 @@ var SSRepository = /** @class */ (function () {
     SSRepository.prototype.getRowRange = function (rowNumber) {
         return this.sheet.getRange(rowNumber, 1, 1, this.columnOrder.length + 1);
     };
-    SSRepository.prototype.onLock = function (runningInLock) {
+    SSRepository.prototype.useLock = function (runningInLock) {
         if (this.lockType === 'none')
             return runningInLock();
         var lock = this.lockType === 'user' ? LockService.getUserLock() : LockService.getScriptLock();
@@ -475,44 +462,37 @@ var SSRepository = /** @class */ (function () {
      * @return 挿入したデータのrow
      */
     SSRepository.prototype.insert = function (entity) {
-        var _this = this;
-        return this.onLock(function () {
-            var _a;
-            var insertRowNumber = -1;
-            var values = _this.sheet.getDataRange().getValues();
-            for (var i = 1; i < values.length; i++) {
-                if (((_a = values[i]) !== null && _a !== void 0 ? _a : [])[0] === SSRepository.DELETE_LABEL) {
-                    insertRowNumber = i + 1;
-                    break;
-                }
+        var _a;
+        var insertRowNumber = -1;
+        var values = this.sheet.getDataRange().getValues();
+        for (var i = 1; i < values.length; i++) {
+            if (((_a = values[i]) !== null && _a !== void 0 ? _a : [])[0] === SSRepository.DELETE_LABEL) {
+                insertRowNumber = i + 1;
+                break;
             }
-            var insertData = _this.toStringList(entity);
-            if (insertRowNumber === -1) {
-                // 最後尾に挿入
-                _this.sheet.appendRow(insertData);
-                return values.length + 1;
-            }
-            else {
-                // 削除行に挿入
-                _this.getRowRange(insertRowNumber).setValues([insertData]);
-                return insertRowNumber;
-            }
-        });
+        }
+        var insertData = this.toStringList(entity);
+        if (insertRowNumber === -1) {
+            // 最後尾に挿入
+            this.sheet.appendRow(insertData);
+            return values.length + 1;
+        }
+        else {
+            // 削除行に挿入
+            this.getRowRange(insertRowNumber).setValues([insertData]);
+            return insertRowNumber;
+        }
     };
     /**
      * 全件取得(フィルターなどはJSで実施)
      */
     SSRepository.prototype.getAll = function () {
-        var _this = this;
-        var values;
-        values = this.onLock(function () {
-            var lastRow = _this.sheet.getLastRow();
-            if (lastRow <= 1) {
-                // 0件の場合は取得しない
-                return [];
-            }
-            return _this.sheet.getRange(2, 1, _this.sheet.getLastRow() - 1, _this.columnOrder.length + 1).getValues();
-        });
+        var lastRow = this.sheet.getLastRow();
+        if (lastRow <= 1) {
+            // 0件の場合は取得しない
+            return [];
+        }
+        var values = this.sheet.getRange(2, 1, this.sheet.getLastRow() - 1, this.columnOrder.length + 1).getValues();
         var entities = [];
         for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
             var value = values_1[_i];
@@ -529,12 +509,8 @@ var SSRepository = /** @class */ (function () {
      * @param row 取得するrow(rowは自動で付与され、不定一意)
      */
     SSRepository.prototype.getByRow = function (row) {
-        var _this = this;
-        var stringList = [];
-        this.onLock(function () {
-            var _a;
-            stringList = (_a = _this.getRowRange(row).getValues()[0]) !== null && _a !== void 0 ? _a : [];
-        });
+        var _a;
+        var stringList = (_a = this.getRowRange(row).getValues()[0]) !== null && _a !== void 0 ? _a : [];
         return this.toEntity(stringList);
     };
     /**
@@ -542,24 +518,18 @@ var SSRepository = /** @class */ (function () {
      * @param entity 変更するデータ(row 必須)
      */
     SSRepository.prototype.update = function (entity) {
-        var _this = this;
-        this.onLock(function () {
-            _this.getRowRange(entity.row).setValues([_this.toStringList(entity)]);
-        });
+        this.getRowRange(entity.row).setValues([this.toStringList(entity)]);
     };
     /**
      * 削除処理
      * @param row 削除するrow(rowは自動で付与され、不定一意)
      */
     SSRepository.prototype.delete = function (row) {
-        var _this = this;
-        this.onLock(function () {
-            var range = _this.getRowRange(row);
-            range.clear();
-            var d = new Array(_this.columnOrder.length + 1);
-            d[0] = SSRepository.DELETE_LABEL;
-            range.setValues([d]);
-        });
+        var range = this.getRowRange(row);
+        range.clear();
+        var d = new Array(this.columnOrder.length + 1);
+        d[0] = SSRepository.DELETE_LABEL;
+        range.setValues([d]);
     };
     SSRepository.TABLE_VERSION_LABEL = 'ver:';
     SSRepository.DELETE_LABEL = 'DELETE';
@@ -567,33 +537,6 @@ var SSRepository = /** @class */ (function () {
     return SSRepository;
 }());
 export { SSRepository };
-/**
- * SpreadsheetをDBとして利用する<br>
- * 作成したRepositoryを登録する
- */
-export function useSpreadsheetDB(initGlobal) {
-    var repositoryList = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        repositoryList[_i - 1] = arguments[_i];
-    }
-    var initTables = function () {
-        for (var _i = 0, repositoryList_1 = repositoryList; _i < repositoryList_1.length; _i++) {
-            var repository = repositoryList_1[_i];
-            try {
-                console.info('create instances');
-                var r = new repository();
-                var name_1 = r['tableName'];
-                console.info('start', name_1);
-                r.initTable();
-                console.info('success', name_1);
-            }
-            catch (e) {
-                console.error('init spreadsheet error', e);
-            }
-        }
-    };
-    initGlobal(global, initTables);
-}
 /*--------------------------------------------------------------------------------------------------------------------*/
 export function spreadsheetCache(spreadsheetId, expirationInSeconds) {
     if (!useGasAPI.spreadsheetApp)

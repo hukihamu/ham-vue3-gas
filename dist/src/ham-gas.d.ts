@@ -33,8 +33,11 @@ type GasAppOptions = {
     useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: {
         [K in keyof T]?: WrapperScript<T[K]>;
     }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>) => WrapperScript<T[K]>) => void, options?: UseScriptsOptions) => GasAppOptions;
-    useSpreadsheetDB: () => GasAppOptions;
-    useSpreadsheetCache: () => GasAppOptions;
+    useSpreadsheetDB: (initGlobal: (global: {
+        initTables: () => void;
+    }, initTables: () => void) => void, ...repositoryList: {
+        new (): SSRepository<any>;
+    }[]) => GasAppOptions;
 };
 declare function createGasApp(options?: CreateOptions): GasAppOptions;
 type AsyncScriptType<T extends BaseScriptType> = {
@@ -114,16 +117,8 @@ export declare class NotionClient {
     private readonly _authToken;
     private readonly _urlFetchApp;
     constructor(authToken: string);
-    static createToken(): string;
     private createHeaders;
     private fetch;
-    get blocks(): {
-        append(): void;
-        get(): void;
-        list(): void;
-        update(): void;
-        delete(): void;
-    };
     get pages(): {
         create: (body: PageCreateParams) => Promise<any>;
         get: (pageId: string) => Promise<any>;
@@ -134,21 +129,6 @@ export declare class NotionClient {
     get databases(): {
         create(): void;
         query: (databaseId: string, body?: DatabaseQueryParams) => Promise<any>;
-        get(): void;
-        update(): void;
-        updateProperty(): void;
-    };
-    get users(): {
-        get(): void;
-        list(): void;
-        getBot(): void;
-    };
-    get comments(): {
-        create(): void;
-        get(): void;
-    };
-    get search(): {
-        searchByTitle(): void;
     };
 }
 /**
@@ -219,7 +199,7 @@ export declare abstract class SSRepository<E extends SSEntity> {
     private toStringList;
     private toEntity;
     private getRowRange;
-    private onLock;
+    useLock<R>(runningInLock: () => R): R;
     /**
      * gas console上で動作させるinitTables()で利用される
      */
@@ -251,15 +231,6 @@ export declare abstract class SSRepository<E extends SSEntity> {
     delete(row: number): void;
 }
 type LockType = 'user' | 'script' | 'none';
-/**
- * SpreadsheetをDBとして利用する<br>
- * 作成したRepositoryを登録する
- */
-export declare function useSpreadsheetDB(initGlobal: (global: {
-    initTables: () => void;
-}, initTables: () => void) => void, ...repositoryList: {
-    new (): SSRepository<any>;
-}[]): void;
 export declare function spreadsheetCache(spreadsheetId: string, expirationInSeconds?: number): {
     get: (rowNumber: number) => any;
     set: (rowNumber: number, data: any) => void;

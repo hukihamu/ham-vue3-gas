@@ -190,12 +190,12 @@ export class NotionClient {
             throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'
         }
     }
-    static createToken(): string{
+    // static createToken(): string{
         // TODO GAS Oauth2を利用する
         //  https://qiita.com/Qnoir/items/98741f6b4266e6960b9d
         //  https://developers.notion.com/reference/create-a-token
-        return ''
-    }
+    //     return ''
+    // }
     private createHeaders(){
         return {
             Authorization: `Bearer ${this._authToken}`,
@@ -220,14 +220,15 @@ export class NotionClient {
         throw resp.getContentText()
     }
 
-    get blocks() {
-        return {
-            append(){},
-            get(){},
-            list(){},
-            update(){},
-            delete(){},}
-    }
+    // TODO
+    // get blocks() {
+    //     return {
+    //         append(){},
+    //         get(){},
+    //         list(){},
+    //         update(){},
+    //         delete(){},}
+    // }
 
     get pages() {
         return {
@@ -288,34 +289,38 @@ export class NotionClient {
                     }
                 }
             },
-            get() {
-            },
-            update() {
-            },
-            updateProperty() {
-            },
+            // TODO
+            // get() {
+            // },
+            // update() {
+            // },
+            // updateProperty() {
+            // },
         }
     }
 
-    get users() {
-        return {
-            get(){},
-            list(){},
-            getBot(){},
-        }
-    }
+    // TODO
+    // get users() {
+    //     return {
+    //         get(){},
+    //         list(){},
+    //         getBot(){},
+    //     }
+    // }
 
-    get comments() {
-        return {
-            create(){},
-            get(){},
-        }
-    }
-    get search() {
-        return {
-            searchByTitle(){},
-        }
-    }
+    // TODO
+    // get comments() {
+    //     return {
+    //         create(){},
+    //         get(){},
+    //     }
+    // }
+    // TODO
+    // get search() {
+    //     return {
+    //         searchByTitle(){},
+    //     }
+    // }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -455,7 +460,7 @@ export abstract class SSRepository<E extends SSEntity> {
         return this.sheet.getRange(rowNumber, 1, 1, this.columnOrder.length + 1)
     }
 
-    private onLock<R>(runningInLock: () => R): R {
+    useLock<R>(runningInLock: () => R): R {
         if (this.lockType === 'none') return runningInLock()
         const lock = this.lockType === 'user' ? LockService.getUserLock() : LockService.getScriptLock()
         try {
@@ -488,41 +493,36 @@ export abstract class SSRepository<E extends SSEntity> {
      * @return 挿入したデータのrow
      */
     insert(entity: E | InitEntity<E>): number {
-        return this.onLock(() => {
-            let insertRowNumber = -1
-            const values = this.sheet.getDataRange().getValues()
-            for (let i = 1; i < values.length; i++) {
-                if ((values[i] ?? [])[0] === SSRepository.DELETE_LABEL) {
-                    insertRowNumber = i + 1
-                    break
-                }
+        let insertRowNumber = -1
+        const values = this.sheet.getDataRange().getValues()
+        for (let i = 1; i < values.length; i++) {
+            if ((values[i] ?? [])[0] === SSRepository.DELETE_LABEL) {
+                insertRowNumber = i + 1
+                break
             }
-            const insertData = this.toStringList(entity)
-            if (insertRowNumber === -1) {
-                // 最後尾に挿入
-                this.sheet.appendRow(insertData)
-                return values.length + 1
-            } else {
-                // 削除行に挿入
-                this.getRowRange(insertRowNumber).setValues([insertData])
-                return insertRowNumber
-            }
-        })
+        }
+        const insertData = this.toStringList(entity)
+        if (insertRowNumber === -1) {
+            // 最後尾に挿入
+            this.sheet.appendRow(insertData)
+            return values.length + 1
+        } else {
+            // 削除行に挿入
+            this.getRowRange(insertRowNumber).setValues([insertData])
+            return insertRowNumber
+        }
     }
 
     /**
      * 全件取得(フィルターなどはJSで実施)
      */
     getAll(): E[] {
-        let values: any[][]
-        values = this.onLock(() => {
-            const lastRow = this.sheet.getLastRow()
-            if (lastRow <= 1) {
-                // 0件の場合は取得しない
-                return []
-            }
-            return this.sheet.getRange(2, 1, this.sheet.getLastRow() - 1, this.columnOrder.length + 1).getValues()
-        })
+        const lastRow = this.sheet.getLastRow()
+        if (lastRow <= 1) {
+            // 0件の場合は取得しない
+            return []
+        }
+        const values = this.sheet.getRange(2, 1, this.sheet.getLastRow() - 1, this.columnOrder.length + 1).getValues()
         const entities: E[] = []
         for (const value of values) {
             if (!value[0]) break
@@ -537,10 +537,7 @@ export abstract class SSRepository<E extends SSEntity> {
      * @param row 取得するrow(rowは自動で付与され、不定一意)
      */
     getByRow(row: number): E {
-        let stringList: string[] = []
-        this.onLock(() => {
-            stringList = this.getRowRange(row).getValues()[0] ?? []
-        })
+        const stringList = this.getRowRange(row).getValues()[0] ?? []
         return this.toEntity(stringList)
     }
 
@@ -549,9 +546,7 @@ export abstract class SSRepository<E extends SSEntity> {
      * @param entity 変更するデータ(row 必須)
      */
     update(entity: E): void {
-        this.onLock(() => {
-            this.getRowRange(entity.row).setValues([this.toStringList(entity)])
-        })
+        this.getRowRange(entity.row).setValues([this.toStringList(entity)])
     }
 
     /**
@@ -559,13 +554,11 @@ export abstract class SSRepository<E extends SSEntity> {
      * @param row 削除するrow(rowは自動で付与され、不定一意)
      */
     delete(row: number): void {
-        this.onLock(() => {
-            const range = this.getRowRange(row)
-            range.clear()
-            const d = new Array(this.columnOrder.length + 1)
-            d[0] = SSRepository.DELETE_LABEL
-            range.setValues([d])
-        })
+        const range = this.getRowRange(row)
+        range.clear()
+        const d = new Array(this.columnOrder.length + 1)
+        d[0] = SSRepository.DELETE_LABEL
+        range.setValues([d])
     }
 }
 

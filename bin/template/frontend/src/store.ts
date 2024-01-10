@@ -1,6 +1,4 @@
 import {defineStore} from 'pinia'
-import {useScripts} from 'ham-vue3-gas/vue'
-import {SampleScripts} from '@ham-vue3-gas/shared/scripts'
 
 export const useStore = defineStore('store', {
     state() {
@@ -9,4 +7,3 @@ export const useStore = defineStore('store', {
         }
     },
 })
-export const scripts = useScripts<SampleScripts>()

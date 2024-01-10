@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {scripts} from '@/store.ts'
+import {scripts} from '@/scripts.ts'
 
 const text = ref('')
 function onRequest() {

@@ -43,7 +43,6 @@ npm run push:watch
 ## reference
 - [Vue3](https://v3.vuejs.org/)
 - [Vue Router](https://next.router.vuejs.org/) 
-- [Pinia](https://pinia.esm.dev/)
 - [Apps Script](https://developers.google.com/apps-script)
 - [Vuetify3](https://vuetifyjs.com/ja/)
 - [Notion API](https://developers.notion.com/)
@@ -66,8 +65,6 @@ npm run push:watch
 - src/components
   - Vueコンポーネントを定義する
   - sampleはgasから`gasSample`を呼び出している
-- src/store
-  - piniaのストアを定義する
 - src/router
   - VueRouterのルーターを定義する
   - gasデプロイ時のルーティングはURL末尾`#`で行われる

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {storeToRefs} from 'pinia'
-import {useStore} from '@/store'
+import {ref} from 'vue'
 import HelloWorld from '@/components/GasSample.vue'
 
-const {counter} = storeToRefs(useStore())
+const {counter} = ref(0)
 </script>
 
 <template>

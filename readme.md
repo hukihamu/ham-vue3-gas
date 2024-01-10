@@ -17,9 +17,9 @@ npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <project-name?>
 ## How to develop
 1. run npm script
 ```powershell
-npm run dev-backed
-npm run dev-fronted
 npm run dev-shared
+npm run dev-fronted
+npm run dev-backed
 ```
 
 ## How to build and deploy
@@ -29,9 +29,14 @@ npm run cp-manifest
 ```
 2. run npm script
 ```powershell
-npm run build-backed
-npm run build-fronted
-npm run build-shared
+npm run build-all
+npm run push
+```
+※watch
+```powershell
+npm run build-shared:watch
+npm run build-fronted:watch
+npm run build-backedn:watch
 npm run push:watch
 ```
 

@@ -39,7 +39,42 @@ npm run build-frontend:watch
 npm run build-backend:watch
 npm run push:watch
 ```
-
+## Usage Example
+### 各データ管理の特徴
+- Notion
+  - 特徴
+    - Query周り(sort、filter、getAll)が一級品
+    - 関数を設定すればgas側の処理が減る
+    - urlFetchAPIの回数制限がネック
+  - 役割 
+    - 複雑なマスタデータ
+    - バックアップor引き継ぎユーザデータ
+- SpreadsheetDB
+  - 特徴 
+    - 1行、1データの操作に強い 
+    - Query周りは遅く弱い
+    - Spreadsheetの関数を使えばgas側の処理が減る
+    - CRUDの回数制限がない
+  - 役割
+    - 大量のCRUDを行う
+    - 全件取得を行わない運用
+- SpreadsheetCache
+  - 特徴 
+    - 全件取得は高速
+    - 同時のupdate処理は不可
+    - 大量のデータ保管は未知数(Spreadsheetの機嫌次第)
+    - 全データJSON化して1行に保管するため、関数を利用できない
+  - 役割
+    - 単純なマスタデータを保管
+    - NotionやSpreadsheetDBのキャッシュ
+- LocalStorage
+  - 特徴 
+    - ブラウザ単位でしか保持できない
+    - CRUDの回数制限がない
+    - サイズも基本気にしなくて良い
+  - 役割
+    - ユーザデータなど人に紐づいたデータ
+    - 大量のCRUDを行う
 ## reference
 - [Vue3](https://v3.vuejs.org/)
 - [Vue Router](https://next.router.vuejs.org/) 

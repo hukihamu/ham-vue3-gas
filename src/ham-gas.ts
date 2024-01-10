@@ -29,8 +29,10 @@ type GasAppOptions = {
      * Simultaneous executions per script	1,000
      */
     useScripts: <T extends AsyncScriptType<BaseScriptType>>(scripts: T, initGlobal: (global: { [K in keyof T]?: WrapperScript<T[K]> }, wrapperScript: <K extends keyof T>(name: Exclude<K, ''>)=> WrapperScript<T[K]>) => void, options?: UseScriptsOptions) => GasAppOptions
-    useSpreadsheetDB: () => GasAppOptions
-    useSpreadsheetCache: () => GasAppOptions
+    useSpreadsheetDB: (initGlobal: (
+        global: {initTables: () => void},
+        initTables: ()=>void) => void,
+                       ...repositoryList: { new (): SSRepository<any> }[]) => GasAppOptions
 }
 let useGasAPI: GasAPI = {}
 
@@ -62,12 +64,29 @@ const gasAppOptions: GasAppOptions = {
         initGlobal(global as any, wrapperScript)
         return this
     },
-    useSpreadsheetCache() {
-        // TODO
-        return this
-    },
-    useSpreadsheetDB() {
-        // TODO
+    /**
+    * SpreadsheetをDBとして利用する<br>
+    * 作成したRepositoryを登録する
+    */
+    useSpreadsheetDB(initGlobal: (
+        global: {initTables: () => void},
+        initTables: ()=>void) => void,
+                     ...repositoryList: { new (): SSRepository<any> }[]) {
+        const initTables = () => {
+            for (const repository of repositoryList) {
+                try {
+                    console.info('create instances')
+                    const r = new repository()
+                    const name = r['tableName']
+                    console.info('start', name)
+                    r.initTable()
+                    console.info('success', name)
+                }catch (e) {
+                    console.error('init spreadsheet error', e)
+                }
+            }
+        }
+        initGlobal(global as any, initTables)
         return this
     },
 }
@@ -551,31 +570,6 @@ export abstract class SSRepository<E extends SSEntity> {
 }
 
 type LockType = 'user' | 'script' | 'none'
-/**
- * SpreadsheetをDBとして利用する<br>
- * 作成したRepositoryを登録する
- */
-export function useSpreadsheetDB(initGlobal: (
-                                     global: {initTables: () => void},
-                                     initTables: ()=>void) => void,
-                                 ...repositoryList: { new (): SSRepository<any> }[]) {
-    const initTables = () => {
-        for (const repository of repositoryList) {
-            try {
-                console.info('create instances')
-                const r = new repository()
-                const name = r['tableName']
-                console.info('start', name)
-                r.initTable()
-                console.info('success', name)
-            }catch (e) {
-                console.error('init spreadsheet error', e)
-            }
-        }
-    }
-    initGlobal(global as any, initTables)
-}
-
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 

@@ -17,7 +17,46 @@ spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
 // mock start
 // TODO
 const SpreadsheetApp = {}
-const UrlFetchApp = {}
+const UrlFetchApp = {
+  fetch(url, options) {
+    let progress = 0
+    let resp = {}
+    fetch(url, {
+      body: options.payload,
+      method: options.method,
+      headers: {
+        ...options.headers,
+        'Content-Type': options.contentType
+      },
+    }).then(async it => {
+      resp.getResponseCode = () => it.status
+      progress++
+      const text = await it.text()
+      resp.getContentText = () => text
+      progress++
+      const blob = await it.blob()
+      resp.getBlob = () => blob
+      progress++
+      resp.getAs = () => blob
+      progress++
+      resp.getContent = () => it.body
+      progress++
+      resp.getHeaders = () => it.headers
+      progress++
+      resp.getAllHeaders = () => {
+            const headers = it.rawHeaders
+            const headerObject = {}
+            for(let i = 0; i< headers.length; i+=2) {
+              headerObject[headers[i]] = headers[i+1]
+            }
+            return headerObject
+          }
+      progress++
+    })
+    while (progress < 7) {}
+    return resp
+  }
+}
 // mock end
 const app = express()
 const port = 3001

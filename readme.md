@@ -41,6 +41,8 @@ npm run push:watch
 - [Pinia](https://pinia.esm.dev/)
 - [Apps Script](https://developers.google.com/apps-script)
 - [Vuetify3](https://vuetifyjs.com/ja/)
+- [Notion API](https://developers.notion.com/)
+- [@google/clasp](https://www.npmjs.com/package/@google/clasp)
 ### root
 - .clasp.json
   - claspの設定ファイル

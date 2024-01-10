@@ -109,7 +109,7 @@ var gasAppOptions = {
  */
 function useProperties() {
     var _a;
-    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () { throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"'; })();
+    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () { throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'; })();
     return {
         document: {
             getProperties: propertiesService.getDocumentProperties().getProperties,
@@ -172,7 +172,7 @@ var NotionClient = /** @class */ (function () {
             this._urlFetchApp = useGasAPI.urlFetchApp;
         }
         else {
-            throw 'not found UrlFetchApp. run "createGasApp({useGasAPI})"';
+            throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"';
         }
     }
     // static createToken(): string{
@@ -346,7 +346,7 @@ var SSRepository = /** @class */ (function () {
          * @protected
          */
         this.spreadSheetApp = (_a = useGasAPI.spreadsheetApp) !== null && _a !== void 0 ? _a : (function () {
-            throw 'not found SpreadsheetApp. run "createGasApp({useGasAPI})"';
+            throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"';
         })();
         /**
          * トランザクションタイプ(LockService参照) default: user
@@ -540,7 +540,7 @@ export { SSRepository };
 /*--------------------------------------------------------------------------------------------------------------------*/
 export function spreadsheetCache(spreadsheetId, expirationInSeconds) {
     if (!useGasAPI.spreadsheetApp)
-        throw 'not found SpreadsheetApp. run "createGasApp({useGasAPI})"';
+        throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"';
     var spreadsheet = useGasAPI.spreadsheetApp.openById(spreadsheetId);
     var tempSheet = spreadsheet.getSheetByName('cache');
     var sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache');

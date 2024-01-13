@@ -1,19 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "experimentalDecorators": true,
-    "module": "es2015",
-    "moduleResolution": "node",
+    "target": "ES2019",
+    "module": "ES2015",
+    "moduleResolution": "bundler",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
     },
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
     "types": ["google-apps-script"],
     "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "strict": true,
-    "skipLibCheck": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
-  "references": [{ "path": "../shared" }]
+  "include": ["src/**/*.ts"]
 }

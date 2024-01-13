@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
+    "declaration": true,
     "outDir": "./dist",
     "target": "ESNext",
     "lib": ["esnext", "DOM"],

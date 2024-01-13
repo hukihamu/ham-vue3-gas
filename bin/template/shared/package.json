@@ -10,7 +10,7 @@
     "sleep-ms": "^2.0.1"
   },
   "exports": {
-    "./scripts": "./dist/src/scripts.js"
+    "./scripts": "./dist/src/scripts"
   },
   "private": true
 }

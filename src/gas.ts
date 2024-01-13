@@ -182,6 +182,9 @@ type PageUpdatePropertiesParams = {
   cover?: any
 }
 
+/**
+ * @deprecated 正式リリース時に削除
+ */
 export class NotionClient {
   // TODO https://www.notion.so/api/v3/loadPageChunk
 // {
@@ -247,47 +250,47 @@ export class NotionClient {
   //         delete(){},}
   // }
 
-  get pages() {
-    return {
-      create: async (body: PageCreateParams) => {
-        return this.fetch('/pages', {
-          headers: this.createHeaders(),
-          method: 'post',
-          payload: JSON.stringify(body),
-          muteHttpExceptions: true,
-        })
-      },
-      get: async (pageId: string) => {
-        return this.fetch(`/pages/${pageId}`, {
-          headers: this.createHeaders(),
-          method: 'get',
-          muteHttpExceptions: true,
-        })
-      },
-      getProperty: async (pageId: string, propertyId: string) => {
-        return this.fetch(`/pages/${pageId}/properties/${propertyId}`, {
-          headers: this.createHeaders(),
-          method: 'get',
-          muteHttpExceptions: true,
-        })
-      },
-      updateProperty: async (pageId: string, body: PageUpdatePropertiesParams) => {
-        return this.fetch(`/pages/${pageId}`, {
-          headers: this.createHeaders(),
-          method: 'patch',
-          payload: JSON.stringify(body),
-          muteHttpExceptions: true,
-        })
-      },
-      archive() {
-      },
-    }
+  pages = {
+    create: async (body: PageCreateParams) => {
+      return this.fetch('/pages', {
+        headers: this.createHeaders(),
+        method: 'post',
+        payload: JSON.stringify(body),
+        muteHttpExceptions: true,
+      })
+    },
+    get: async (pageId: string) => {
+      return this.fetch(`/pages/${pageId}`, {
+        headers: this.createHeaders(),
+        method: 'get',
+        muteHttpExceptions: true,
+      })
+    },
+    getProperty: async (pageId: string, propertyId: string) => {
+      return this.fetch(`/pages/${pageId}/properties/${propertyId}`, {
+        headers: this.createHeaders(),
+        method: 'get',
+        muteHttpExceptions: true,
+      })
+    },
+    updateProperty: async (pageId: string, body: PageUpdatePropertiesParams) => {
+      return this.fetch(`/pages/${pageId}`, {
+        headers: this.createHeaders(),
+        method: 'patch',
+        payload: JSON.stringify(body),
+        muteHttpExceptions: true,
+      })
+    },
+    // TODO
+    // archive() {
+    // },
   }
 
-  get databases() {
-    return {
-      create() {
-      },
+  databases =
+    {
+      // TODO
+      // create() {
+      // },
       query: async (databaseId: string, body: DatabaseQueryParams = {}): Promise<any> => {
         let cursor: string | undefined = undefined
         let result: any[] = []
@@ -315,7 +318,6 @@ export class NotionClient {
       // updateProperty() {
       // },
     }
-  }
 
   // TODO
   // get users() {
@@ -593,7 +595,7 @@ export function spreadsheetCache(spreadsheetId: string,
   const tempSheet = spreadsheet.getSheetByName('cache')
   const sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache')
   return {
-    get: (rowNumber: number) => {
+    get(rowNumber: number) {
       const expiration = Number.parseInt(sheet.getRange(rowNumber, 1, 1, 1).getValue(), 10)
       if (!expiration) {
         return null
@@ -614,7 +616,7 @@ export function spreadsheetCache(spreadsheetId: string,
       }
       return JSON.parse(text)
     },
-    set: (rowNumber: number, data: any) => {
+    set(rowNumber: number, data: any) {
       // ※1セル50000文字制限のため、余裕を持って45000
       let json = JSON.stringify(data)
       const chunks: any[] = [Date.now()]
@@ -625,7 +627,7 @@ export function spreadsheetCache(spreadsheetId: string,
       const range = sheet.getRange(rowNumber, 1, 1, chunks.length)
       range.setValues([chunks])
     },
-    clear: (rowNumber: number) => {
+    clear(rowNumber: number) {
       sheet.getRange(rowNumber, 1, 1, sheet.getLastColumn()).clear()
     }
   }

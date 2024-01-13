@@ -166,8 +166,12 @@ function useProperties() {
         }
     };
 }
+/**
+ * @deprecated 正式リリース時に削除
+ */
 var NotionClient = /** @class */ (function () {
     function NotionClient(authToken) {
+        var _this = this;
         // TODO https://www.notion.so/api/v3/loadPageChunk
         // {
         //  "pageId": "your-page-id",
@@ -179,6 +183,104 @@ var NotionClient = /** @class */ (function () {
         // "verticalColumns": false
         // }
         this._apiBaseUrl = 'https://api.notion.com/v1';
+        // TODO
+        // get blocks() {
+        //     return {
+        //         append(){},
+        //         get(){},
+        //         list(){},
+        //         update(){},
+        //         delete(){},}
+        // }
+        this.pages = {
+            create: function (body) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.fetch('/pages', {
+                            headers: this.createHeaders(),
+                            method: 'post',
+                            payload: JSON.stringify(body),
+                            muteHttpExceptions: true,
+                        })];
+                });
+            }); },
+            get: function (pageId) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.fetch("/pages/".concat(pageId), {
+                            headers: this.createHeaders(),
+                            method: 'get',
+                            muteHttpExceptions: true,
+                        })];
+                });
+            }); },
+            getProperty: function (pageId, propertyId) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.fetch("/pages/".concat(pageId, "/properties/").concat(propertyId), {
+                            headers: this.createHeaders(),
+                            method: 'get',
+                            muteHttpExceptions: true,
+                        })];
+                });
+            }); },
+            updateProperty: function (pageId, body) { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.fetch("/pages/".concat(pageId), {
+                            headers: this.createHeaders(),
+                            method: 'patch',
+                            payload: JSON.stringify(body),
+                            muteHttpExceptions: true,
+                        })];
+                });
+            }); },
+            // TODO
+            // archive() {
+            // },
+        };
+        this.databases = {
+            // TODO
+            // create() {
+            // },
+            query: function (databaseId, body) {
+                if (body === void 0) { body = {}; }
+                return __awaiter(_this, void 0, void 0, function () {
+                    var cursor, result, payload, resp;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                cursor = undefined;
+                                result = [];
+                                _a.label = 1;
+                            case 1:
+                                if (!true) return [3 /*break*/, 3];
+                                payload = Object.assign(body, { start_cursor: cursor });
+                                return [4 /*yield*/, this.fetch("/databases/".concat(databaseId, "/query"), {
+                                        headers: this.createHeaders(),
+                                        method: 'post',
+                                        payload: JSON.stringify(payload),
+                                        muteHttpExceptions: true,
+                                    })];
+                            case 2:
+                                resp = _a.sent();
+                                result = result.concat(resp.results);
+                                if (resp.has_more) {
+                                    cursor = resp.next_cursor;
+                                }
+                                else {
+                                    return [2 /*return*/, result];
+                                }
+                                return [3 /*break*/, 1];
+                            case 3: return [2 /*return*/];
+                        }
+                    });
+                });
+            },
+            // TODO
+            // get() {
+            // },
+            // update() {
+            // },
+            // updateProperty() {
+            // },
+        };
         this._authToken = authToken;
         if (useGasAPI.urlFetchApp) {
             this._urlFetchApp = useGasAPI.urlFetchApp;
@@ -227,116 +329,6 @@ var NotionClient = /** @class */ (function () {
             });
         });
     };
-    Object.defineProperty(NotionClient.prototype, "pages", {
-        // TODO
-        // get blocks() {
-        //     return {
-        //         append(){},
-        //         get(){},
-        //         list(){},
-        //         update(){},
-        //         delete(){},}
-        // }
-        get: function () {
-            var _this = this;
-            return {
-                create: function (body) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        return [2 /*return*/, this.fetch('/pages', {
-                                headers: this.createHeaders(),
-                                method: 'post',
-                                payload: JSON.stringify(body),
-                                muteHttpExceptions: true,
-                            })];
-                    });
-                }); },
-                get: function (pageId) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        return [2 /*return*/, this.fetch("/pages/".concat(pageId), {
-                                headers: this.createHeaders(),
-                                method: 'get',
-                                muteHttpExceptions: true,
-                            })];
-                    });
-                }); },
-                getProperty: function (pageId, propertyId) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        return [2 /*return*/, this.fetch("/pages/".concat(pageId, "/properties/").concat(propertyId), {
-                                headers: this.createHeaders(),
-                                method: 'get',
-                                muteHttpExceptions: true,
-                            })];
-                    });
-                }); },
-                updateProperty: function (pageId, body) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        return [2 /*return*/, this.fetch("/pages/".concat(pageId), {
-                                headers: this.createHeaders(),
-                                method: 'patch',
-                                payload: JSON.stringify(body),
-                                muteHttpExceptions: true,
-                            })];
-                    });
-                }); },
-                archive: function () {
-                },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(NotionClient.prototype, "databases", {
-        get: function () {
-            var _this = this;
-            return {
-                create: function () {
-                },
-                query: function (databaseId, body) {
-                    if (body === void 0) { body = {}; }
-                    return __awaiter(_this, void 0, void 0, function () {
-                        var cursor, result, payload, resp;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    cursor = undefined;
-                                    result = [];
-                                    _a.label = 1;
-                                case 1:
-                                    if (!true) return [3 /*break*/, 3];
-                                    payload = Object.assign(body, { start_cursor: cursor });
-                                    return [4 /*yield*/, this.fetch("/databases/".concat(databaseId, "/query"), {
-                                            headers: this.createHeaders(),
-                                            method: 'post',
-                                            payload: JSON.stringify(payload),
-                                            muteHttpExceptions: true,
-                                        })];
-                                case 2:
-                                    resp = _a.sent();
-                                    result = result.concat(resp.results);
-                                    if (resp.has_more) {
-                                        cursor = resp.next_cursor;
-                                    }
-                                    else {
-                                        return [2 /*return*/, result];
-                                    }
-                                    return [3 /*break*/, 1];
-                                case 3: return [2 /*return*/];
-                            }
-                        });
-                    });
-                },
-                // TODO
-                // get() {
-                // },
-                // update() {
-                // },
-                // updateProperty() {
-                // },
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
     return NotionClient;
 }());
 export { NotionClient };

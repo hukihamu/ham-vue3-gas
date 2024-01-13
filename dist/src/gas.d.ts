@@ -112,6 +112,9 @@ type PageUpdatePropertiesParams = {
     icon?: any;
     cover?: any;
 };
+/**
+ * @deprecated 正式リリース時に削除
+ */
 export declare class NotionClient {
     private readonly _apiBaseUrl;
     private readonly _authToken;
@@ -119,15 +122,13 @@ export declare class NotionClient {
     constructor(authToken: string);
     private createHeaders;
     private fetch;
-    get pages(): {
+    pages: {
         create: (body: PageCreateParams) => Promise<any>;
         get: (pageId: string) => Promise<any>;
         getProperty: (pageId: string, propertyId: string) => Promise<any>;
         updateProperty: (pageId: string, body: PageUpdatePropertiesParams) => Promise<any>;
-        archive(): void;
     };
-    get databases(): {
-        create(): void;
+    databases: {
         query: (databaseId: string, body?: DatabaseQueryParams) => Promise<any>;
     };
 }
@@ -232,7 +233,7 @@ export declare abstract class SSRepository<E extends SSEntity> {
 }
 type LockType = 'user' | 'script' | 'none';
 export declare function spreadsheetCache(spreadsheetId: string, expirationInSeconds?: number): {
-    get: (rowNumber: number) => any;
-    set: (rowNumber: number, data: any) => void;
-    clear: (rowNumber: number) => void;
+    get(rowNumber: number): any;
+    set(rowNumber: number, data: any): void;
+    clear(rowNumber: number): void;
 };

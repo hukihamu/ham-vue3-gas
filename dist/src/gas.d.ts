@@ -1,23 +1,11 @@
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
 /// <reference types="google-apps-script" />
-/// <reference types="google-apps-script" />
-/// <reference types="google-apps-script" />
 import { BaseScriptType } from './share';
 export { createGasApp, AsyncScriptType, useProperties };
-/**
- * URL Fetch calls	20,000 / day
- */
-type GasAPI = {
-    urlFetchApp?: GoogleAppsScript.URL_Fetch.UrlFetchApp;
-    spreadsheetApp?: GoogleAppsScript.Spreadsheet.SpreadsheetApp;
-    session?: GoogleAppsScript.Base.Session;
-    propertiesService?: GoogleAppsScript.Properties.PropertiesService;
-};
 type CreateOptions = {
     htmlFileName?: string;
     editHtmlOutput?: (output: GoogleAppsScript.HTML.HtmlOutput) => GoogleAppsScript.HTML.HtmlOutput;
-    useGasAPI?: GasAPI;
     onDoGet?: (htmlOutput: GoogleAppsScript.HTML.HtmlOutput) => void;
 };
 type UseScriptsOptions = {
@@ -119,7 +107,7 @@ export declare class NotionClient {
     private readonly _apiBaseUrl;
     private readonly _authToken;
     private readonly _urlFetchApp;
-    constructor(authToken: string);
+    constructor(authToken: string, urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp);
     private createHeaders;
     private fetch;
     pages: {
@@ -186,7 +174,7 @@ export declare abstract class SSRepository<E extends SSEntity> {
      * SpreadsheetApp(OAuth スコープ回避のため)
      * @protected
      */
-    protected readonly spreadSheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp;
+    protected abstract readonly spreadSheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp;
     /**
      * トランザクションタイプ(LockService参照) default: user
      */
@@ -232,7 +220,7 @@ export declare abstract class SSRepository<E extends SSEntity> {
     delete(row: number): void;
 }
 type LockType = 'user' | 'script' | 'none';
-export declare function spreadsheetCache(spreadsheetId: string, expirationInSeconds?: number): {
+export declare function spreadsheetCache(spreadsheetId: string, spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp, expirationInSeconds?: number): {
     get(rowNumber: number): any;
     set(rowNumber: number, data: any): void;
     clear(rowNumber: number): void;

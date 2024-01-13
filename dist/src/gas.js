@@ -35,9 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 export { createGasApp, useProperties };
-var useGasAPI = {};
 function createGasApp(options) {
-    var _a;
     if (options === void 0) { options = {}; }
     global.doGet = function () {
         var _a;
@@ -47,7 +45,6 @@ function createGasApp(options) {
             options.onDoGet(htmlOutput);
         return htmlOutput;
     };
-    useGasAPI = (_a = options.useGasAPI) !== null && _a !== void 0 ? _a : {};
     return gasAppOptions;
 }
 var gasAppOptions = {
@@ -108,60 +105,56 @@ var gasAppOptions = {
  * Properties read/write	50,000 / day
  */
 function useProperties() {
-    var _a;
-    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () {
-        throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"';
-    })();
     return {
         document: {
-            getProperties: propertiesService.getDocumentProperties().getProperties,
-            deleteAllProperties: propertiesService.getDocumentProperties().deleteAllProperties,
-            getKeys: propertiesService.getDocumentProperties().getKeys,
+            getProperties: PropertiesService.getDocumentProperties().getProperties,
+            deleteAllProperties: PropertiesService.getDocumentProperties().deleteAllProperties,
+            getKeys: PropertiesService.getDocumentProperties().getKeys,
             setProperties: function (properties) {
-                return propertiesService.getDocumentProperties().setProperties(properties);
+                return PropertiesService.getDocumentProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return propertiesService.getDocumentProperties().getProperty(key);
+                return PropertiesService.getDocumentProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return propertiesService.getDocumentProperties().setProperty(key, value);
+                return PropertiesService.getDocumentProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                propertiesService.getDocumentProperties().deleteProperty(key);
+                PropertiesService.getDocumentProperties().deleteProperty(key);
             },
         },
         script: {
-            getProperties: propertiesService.getScriptProperties().getProperties,
-            deleteAllProperties: propertiesService.getScriptProperties().deleteAllProperties,
-            getKeys: propertiesService.getScriptProperties().getKeys,
+            getProperties: PropertiesService.getScriptProperties().getProperties,
+            deleteAllProperties: PropertiesService.getScriptProperties().deleteAllProperties,
+            getKeys: PropertiesService.getScriptProperties().getKeys,
             setProperties: function (properties) {
-                return propertiesService.getScriptProperties().setProperties(properties);
+                return PropertiesService.getScriptProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return propertiesService.getScriptProperties().getProperty(key);
+                return PropertiesService.getScriptProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return propertiesService.getScriptProperties().setProperty(key, value);
+                return PropertiesService.getScriptProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                propertiesService.getScriptProperties().deleteProperty(key);
+                PropertiesService.getScriptProperties().deleteProperty(key);
             },
         },
         user: {
-            getProperties: propertiesService.getUserProperties().getProperties,
-            deleteAllProperties: propertiesService.getUserProperties().deleteAllProperties,
-            getKeys: propertiesService.getUserProperties().getKeys,
+            getProperties: PropertiesService.getUserProperties().getProperties,
+            deleteAllProperties: PropertiesService.getUserProperties().deleteAllProperties,
+            getKeys: PropertiesService.getUserProperties().getKeys,
             setProperties: function (properties) {
-                return propertiesService.getUserProperties().setProperties(properties);
+                return PropertiesService.getUserProperties().setProperties(properties);
             },
             getProperty: function (key) {
-                return propertiesService.getUserProperties().getProperty(key);
+                return PropertiesService.getUserProperties().getProperty(key);
             },
             setProperty: function (key, value) {
-                return propertiesService.getUserProperties().setProperty(key, value);
+                return PropertiesService.getUserProperties().setProperty(key, value);
             },
             deleteProperty: function (key) {
-                propertiesService.getUserProperties().deleteProperty(key);
+                PropertiesService.getUserProperties().deleteProperty(key);
             },
         }
     };
@@ -170,7 +163,7 @@ function useProperties() {
  * @deprecated 正式リリース時に削除
  */
 var NotionClient = /** @class */ (function () {
-    function NotionClient(authToken) {
+    function NotionClient(authToken, urlFetchApp) {
         var _this = this;
         // TODO https://www.notion.so/api/v3/loadPageChunk
         // {
@@ -282,12 +275,7 @@ var NotionClient = /** @class */ (function () {
             // },
         };
         this._authToken = authToken;
-        if (useGasAPI.urlFetchApp) {
-            this._urlFetchApp = useGasAPI.urlFetchApp;
-        }
-        else {
-            throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"';
-        }
+        this._urlFetchApp = urlFetchApp;
     }
     // static createToken(): string{
     // TODO GAS Oauth2を利用する
@@ -340,19 +328,11 @@ export { NotionClient };
  */
 var SSRepository = /** @class */ (function () {
     function SSRepository() {
-        var _a;
         /**
          * テーブル作成(アップデート)時、初期にInsertされるデータ
          * @protected
          */
         this.initData = [];
-        /**
-         * SpreadsheetApp(OAuth スコープ回避のため)
-         * @protected
-         */
-        this.spreadSheetApp = (_a = useGasAPI.spreadsheetApp) !== null && _a !== void 0 ? _a : (function () {
-            throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"';
-        })();
         /**
          * トランザクションタイプ(LockService参照) default: user
          */
@@ -543,10 +523,8 @@ var SSRepository = /** @class */ (function () {
 }());
 export { SSRepository };
 /*--------------------------------------------------------------------------------------------------------------------*/
-export function spreadsheetCache(spreadsheetId, expirationInSeconds) {
-    if (!useGasAPI.spreadsheetApp)
-        throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"';
-    var spreadsheet = useGasAPI.spreadsheetApp.openById(spreadsheetId);
+export function spreadsheetCache(spreadsheetId, spreadsheetApp, expirationInSeconds) {
+    var spreadsheet = spreadsheetApp.openById(spreadsheetId);
     var tempSheet = spreadsheet.getSheetByName('cache');
     var sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache');
     return {

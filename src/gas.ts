@@ -4,19 +4,9 @@ export {createGasApp, AsyncScriptType, useProperties}
 
 declare let global: { [name: string]: unknown }
 
-/**
- * URL Fetch calls	20,000 / day
- */
-type GasAPI = {
-  urlFetchApp?: GoogleAppsScript.URL_Fetch.UrlFetchApp
-  spreadsheetApp?: GoogleAppsScript.Spreadsheet.SpreadsheetApp
-  session?: GoogleAppsScript.Base.Session
-  propertiesService?: GoogleAppsScript.Properties.PropertiesService
-}
 type CreateOptions = {
   htmlFileName?: string
   editHtmlOutput?: (output: GoogleAppsScript.HTML.HtmlOutput) => GoogleAppsScript.HTML.HtmlOutput
-  useGasAPI?: GasAPI
   onDoGet?: (htmlOutput: GoogleAppsScript.HTML.HtmlOutput) => void
 }
 type UseScriptsOptions = {
@@ -35,7 +25,6 @@ type GasAppOptions = {
                        initTables: () => void) => void,
                      ...repositoryList: { new(): SSRepository<any> }[]) => GasAppOptions
 }
-let useGasAPI: GasAPI = {}
 
 function createGasApp(options: CreateOptions = {}): GasAppOptions {
   global.doGet = () => {
@@ -44,7 +33,6 @@ function createGasApp(options: CreateOptions = {}): GasAppOptions {
     if (options.onDoGet) options.onDoGet(htmlOutput)
     return htmlOutput
   }
-  useGasAPI = options.useGasAPI ?? {}
 
   return gasAppOptions
 }
@@ -101,59 +89,56 @@ type WrapperScript<S extends (args: any) => any> = (args: Parameters<S>[0]) => P
  * Properties read/write	50,000 / day
  */
 function useProperties<K extends string>() {
-  const propertiesService = useGasAPI.propertiesService ?? (() => {
-    throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'
-  })()
   return {
     document: {
-      getProperties: propertiesService.getDocumentProperties().getProperties,
-      deleteAllProperties: propertiesService.getDocumentProperties().deleteAllProperties,
-      getKeys: propertiesService.getDocumentProperties().getKeys,
+      getProperties: PropertiesService.getDocumentProperties().getProperties,
+      deleteAllProperties: PropertiesService.getDocumentProperties().deleteAllProperties,
+      getKeys: PropertiesService.getDocumentProperties().getKeys,
       setProperties: (properties: { K: string }) => {
-        return propertiesService.getDocumentProperties().setProperties(properties)
+        return PropertiesService.getDocumentProperties().setProperties(properties)
       },
       getProperty: (key: K) => {
-        return propertiesService.getDocumentProperties().getProperty(key)
+        return PropertiesService.getDocumentProperties().getProperty(key)
       },
       setProperty: (key: K, value: string) => {
-        return propertiesService.getDocumentProperties().setProperty(key, value)
+        return PropertiesService.getDocumentProperties().setProperty(key, value)
       },
       deleteProperty: (key: K) => {
-        propertiesService.getDocumentProperties().deleteProperty(key)
+        PropertiesService.getDocumentProperties().deleteProperty(key)
       },
     },
     script: {
-      getProperties: propertiesService.getScriptProperties().getProperties,
-      deleteAllProperties: propertiesService.getScriptProperties().deleteAllProperties,
-      getKeys: propertiesService.getScriptProperties().getKeys,
+      getProperties: PropertiesService.getScriptProperties().getProperties,
+      deleteAllProperties: PropertiesService.getScriptProperties().deleteAllProperties,
+      getKeys: PropertiesService.getScriptProperties().getKeys,
       setProperties: (properties: { K: string }) => {
-        return propertiesService.getScriptProperties().setProperties(properties)
+        return PropertiesService.getScriptProperties().setProperties(properties)
       },
       getProperty: (key: K) => {
-        return propertiesService.getScriptProperties().getProperty(key)
+        return PropertiesService.getScriptProperties().getProperty(key)
       },
       setProperty: (key: K, value: string) => {
-        return propertiesService.getScriptProperties().setProperty(key, value)
+        return PropertiesService.getScriptProperties().setProperty(key, value)
       },
       deleteProperty: (key: K) => {
-        propertiesService.getScriptProperties().deleteProperty(key)
+        PropertiesService.getScriptProperties().deleteProperty(key)
       },
     },
     user: {
-      getProperties: propertiesService.getUserProperties().getProperties,
-      deleteAllProperties: propertiesService.getUserProperties().deleteAllProperties,
-      getKeys: propertiesService.getUserProperties().getKeys,
+      getProperties: PropertiesService.getUserProperties().getProperties,
+      deleteAllProperties: PropertiesService.getUserProperties().deleteAllProperties,
+      getKeys: PropertiesService.getUserProperties().getKeys,
       setProperties: (properties: { K: string }) => {
-        return propertiesService.getUserProperties().setProperties(properties)
+        return PropertiesService.getUserProperties().setProperties(properties)
       },
       getProperty: (key: K) => {
-        return propertiesService.getUserProperties().getProperty(key)
+        return PropertiesService.getUserProperties().getProperty(key)
       },
       setProperty: (key: K, value: string) => {
-        return propertiesService.getUserProperties().setProperty(key, value)
+        return PropertiesService.getUserProperties().setProperty(key, value)
       },
       deleteProperty: (key: K) => {
-        propertiesService.getUserProperties().deleteProperty(key)
+        PropertiesService.getUserProperties().deleteProperty(key)
       },
     }
   }
@@ -200,13 +185,9 @@ export class NotionClient {
   private readonly _authToken: string
   private readonly _urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp
 
-  constructor(authToken: string) {
+  constructor(authToken: string, urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp) {
     this._authToken = authToken
-    if (useGasAPI.urlFetchApp) {
-      this._urlFetchApp = useGasAPI.urlFetchApp
-    } else {
-      throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'
-    }
+    this._urlFetchApp = urlFetchApp
   }
 
   // static createToken(): string{
@@ -421,9 +402,7 @@ export abstract class SSRepository<E extends SSEntity> {
    * SpreadsheetApp(OAuth スコープ回避のため)
    * @protected
    */
-  protected readonly spreadSheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp = useGasAPI.spreadsheetApp ?? (() => {
-    throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"'
-  })()
+  protected abstract readonly spreadSheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp
   /**
    * トランザクションタイプ(LockService参照) default: user
    */
@@ -589,9 +568,9 @@ type LockType = 'user' | 'script' | 'none'
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 export function spreadsheetCache(spreadsheetId: string,
+                                 spreadsheetApp: GoogleAppsScript.Spreadsheet.SpreadsheetApp,
                                  expirationInSeconds?: number) {
-  if (!useGasAPI.spreadsheetApp) throw 'not found spreadsheetApp. run "createGasApp({useGasAPI})"'
-  const spreadsheet = useGasAPI.spreadsheetApp.openById(spreadsheetId)
+  const spreadsheet = spreadsheetApp.openById(spreadsheetId)
   const tempSheet = spreadsheet.getSheetByName('cache')
   const sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache')
   return {

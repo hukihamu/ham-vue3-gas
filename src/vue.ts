@@ -1,6 +1,6 @@
 import {App, Component, createApp, SetupContext} from 'vue'
 import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router'
-import {BaseScriptType} from './ham-share'
+import {BaseScriptType} from './share'
 
 export {createGasRouter, useScripts}
 

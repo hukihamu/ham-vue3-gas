@@ -76,9 +76,9 @@ var gasAppOptions = {
         return this;
     },
     /**
-    * SpreadsheetをDBとして利用する<br>
-    * 作成したRepositoryを登録する
-    */
+     * SpreadsheetをDBとして利用する<br>
+     * 作成したRepositoryを登録する
+     */
     useSpreadsheetDB: function (initGlobal) {
         var repositoryList = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -109,7 +109,9 @@ var gasAppOptions = {
  */
 function useProperties() {
     var _a;
-    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () { throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"'; })();
+    var propertiesService = (_a = useGasAPI.propertiesService) !== null && _a !== void 0 ? _a : (function () {
+        throw 'not found urlFetchApp. run "createGasApp({useGasAPI})"';
+    })();
     return {
         document: {
             getProperties: propertiesService.getDocumentProperties().getProperties,
@@ -166,6 +168,16 @@ function useProperties() {
 }
 var NotionClient = /** @class */ (function () {
     function NotionClient(authToken) {
+        // TODO https://www.notion.so/api/v3/loadPageChunk
+        // {
+        //  "pageId": "your-page-id",
+        //  "limit": 50,
+        //  "cursor": {
+        //  "stack": []
+        //   },
+        // "chunkNumber": 0,
+        // "verticalColumns": false
+        // }
         this._apiBaseUrl = 'https://api.notion.com/v1';
         this._authToken = authToken;
         if (useGasAPI.urlFetchApp) {
@@ -266,7 +278,8 @@ var NotionClient = /** @class */ (function () {
                             })];
                     });
                 }); },
-                archive: function () { },
+                archive: function () {
+                },
             };
         },
         enumerable: false,
@@ -585,4 +598,4 @@ export function spreadsheetCache(spreadsheetId, expirationInSeconds) {
         }
     };
 }
-//# sourceMappingURL=ham-gas.js.map
+//# sourceMappingURL=gas.js.map

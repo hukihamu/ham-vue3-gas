@@ -1,5 +1,5 @@
 import { Router, RouteRecordRaw } from 'vue-router';
-import { BaseScriptType } from './ham-share';
+import { BaseScriptType } from './share';
 export { createGasRouter, useScripts };
 declare function createGasRouter(routes: RouteRecordRaw[]): Router;
 declare function useScripts<T extends BaseScriptType>(): {

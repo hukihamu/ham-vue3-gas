@@ -48,4 +48,4 @@ function useScripts() {
         }
     };
 }
-//# sourceMappingURL=ham-vue.js.map
+//# sourceMappingURL=vue.js.map

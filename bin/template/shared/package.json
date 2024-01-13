@@ -1,7 +1,7 @@
 {
   "name": "@ham-vue3-gas/shared",
   "scripts": {
-    "build": "tsc && npx sleep-ms 1000 && npm install",
+    "build": "tsc && npx sleep-ms 3000 && npm install",
     "build:watch": "nodemon --ext ts --watch src --exec \"npm run build\"",
     "dev": "npm run build:watch"
   },
@@ -10,7 +10,7 @@
     "sleep-ms": "^2.0.1"
   },
   "exports": {
-    "./scripts": "./dist/src/scripts"
+    "./scripts": "./dist/src/scripts.js"
   },
   "private": true
 }

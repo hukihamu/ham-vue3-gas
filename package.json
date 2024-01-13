@@ -21,9 +21,18 @@
   },
   "bin": "bin/bin.mjs",
   "exports": {
-    "./gas": "./dist/src/gas.js",
-    "./vue": "./dist/src/vue.js",
-    "./share": "./dist/src/share.js",
+    "./gas": {
+      "import": "./dist/src/gas.js",
+      "types": "./dist/src/gas.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/src/vue.js",
+      "types": "./dist/src/vue.d.ts"
+    },
+    "./share": {
+      "import": "./dist/src/share.js",
+      "types": "./dist/src/share.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "typesVersions": {

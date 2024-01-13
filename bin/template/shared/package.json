@@ -9,8 +9,7 @@
     "nodemon": "^3.0.2",
     "sleep-ms": "^2.0.1"
   },
-  "exports": {
-    "./scripts": "./dist/src/scripts.js"
-  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "private": true
 }

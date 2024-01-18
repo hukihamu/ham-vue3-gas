@@ -3,17 +3,11 @@ const fs = require('fs')
 const cors = require('cors')
 const path = require('path')
 const spawn = require('cross-spawn')
+const childProcess = require('child_process')
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
 
 childProcess.execSync('webpack --mode development')
-
-const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
-let gas = eval(`let globalThis = {};` + rawText + 'globalThis')
-fs.watchFile('../dist/gas.js', () => {
-  console.info('update:gas.js')
-  const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
-  gas = eval(`let globalThis = {};` + rawText + 'globalThis')
-})
-spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
+const isDev = true
 // mock start
 const mockData = {}
 function mockRange(id, name) {
@@ -25,11 +19,16 @@ function mockRange(id, name) {
     ___numRows___: 1,
     ___numColumns___: 1,
     getValues() {
-      return mockData[this.___id___][this.___name___]
+      const ss = mockData[this.___id___] ?? {}
+      const sheet = ss[this.___name___] ?? []
+      return sheet
         .slice(this.___row___ - 1, this.___row___ + this.___numRows___ - 1)
-        .map(row => row.slice(this.___column___ - 1, this.___column___ + this.___numColumns___ - 1))
+        .map(row => row
+          .slice(this.___column___ - 1, this.___column___ + this.___numColumns___ - 1))
     },
     setValues(values) {
+      if (!mockData[this.___id___]) mockData[this.___id___] = {[this.___name___]: []}
+      if (!mockData[this.___id___][this.___name___]) mockData[this.___id___][this.___name___] = []
       const rows = mockData[this.___id___][this.___name___]
       for (let i = 0; i < this.___numRows___; i++) {
         const row = rows[this.___row___ + i - 1]
@@ -43,10 +42,15 @@ function mockRange(id, name) {
       }
     },
     getValue() {
-      return mockData[this.___id___][this.___name___]
-        .slice(this.___row___ - 1, this.___row___ + this.___numRows___ - 1)[0][this.___column___ - 1]
+      const ss = mockData[this.___id___] ?? {}
+      const sheet = ss[this.___name___] ?? []
+      const row = sheet.slice(this.___row___ - 1, this.___row___ + this.___numRows___ - 1)[0] ?? []
+      return row[this.___column___ - 1] ?? ''
     },
     setValue(value) {
+      if (!mockData[this.___id___]) mockData[this.___id___] = {[this.___name___]: []}
+      if (!mockData[this.___id___][this.___name___]) mockData[this.___id___][this.___name___] = []
+      if (!mockData[this.___id___][this.___name___][this.___row___ - 1]) mockData[this.___id___][this.___name___][this.___row___ - 1] = []
       mockData[this.___id___][this.___name___][this.___row___ - 1][this.___column___ - 1] = value
     },
     clear() {
@@ -131,46 +135,50 @@ const SpreadsheetApp = {
   flush() {}
 }
 const UrlFetchApp = {
-  fetch(url, options) {
-    let progress = 0
-    let resp = {}
-    fetch(url, {
-      body: options.payload,
-      method: options.method,
-      headers: {
-        ...options.headers,
-        'Content-Type': options.contentType
-      },
-    }).then(async it => {
-      resp.getResponseCode = () => it.status
-      progress++
-      const text = await it.text()
-      resp.getContentText = () => text
-      progress++
-      const blob = await it.blob()
-      resp.getBlob = () => blob
-      progress++
-      resp.getAs = () => blob
-      progress++
-      resp.getContent = () => it.body
-      progress++
-      resp.getHeaders = () => it.headers
-      progress++
-      resp.getAllHeaders = () => {
-            const headers = it.rawHeaders
-            const headerObject = {}
-            for(let i = 0; i< headers.length; i+=2) {
-              headerObject[headers[i]] = headers[i+1]
-            }
-            return headerObject
-          }
-      progress++
-    })
-    while (progress < 7) {}
-    return resp
+  fetch(url, options = {}) {
+    const xhr = new XMLHttpRequest()
+    xhr.open(options.method ?? 'GET', url, false)
+    for (const key of Object.keys(options.headers ?? {})) {
+      xhr.setRequestHeader(key, options.headers[key])
+    }
+    xhr.setRequestHeader('Content-Type', options.contentType ?? 'application/json')
+    xhr.send(options.payload)
+    return {
+      getResponseCode: () => xhr.status,
+      getContentText: () => xhr.responseText,
+      getBlob: () => xhr,// TODO
+      getAs: () => xhr,// TODO
+      getContent: () => xhr,// TODO
+      getHeaders: () => xhr.getAllResponseHeaders(),// TODO
+      getAllHeaders: () => xhr.getAllResponseHeaders(),
+    }
   }
 }
+const ScriptApp = {
+  getService() {
+    return {
+      getUrl() {
+        return 'http://localhost:3001#' + isDev ? 'dev' : 'exec'
+      }
+    }
+  }
+}
+global.SpreadsheetApp = SpreadsheetApp
+global.UrlFetchApp = UrlFetchApp
 // mock end
+
+
+const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
+let gas = eval(`let globalThis = {};` + rawText + 'globalThis')
+fs.watchFile('../dist/gas.js', () => {
+  console.info('update:gas.js')
+  const rawText = fs.readFileSync('../dist/gas.js', 'utf8')
+  gas = eval(`let globalThis = {};` + rawText + 'globalThis')
+})
+const wp = spawn('webpack',['--watch', '--mode', 'development'], {stdio: 'inherit'})
+wp.on('error', (error) => {
+  console.error('build error:', error);
+})
 const app = express()
 const port = 3001
 
@@ -178,13 +186,15 @@ app.use(express.json());
 app.use(cors())
 
 app.post('/:scriptName', async (req, res) => {
-  console.log('scriptName', req.params.scriptName)
-  console.log('args', req.body)
-  const result = await gas[req.params.scriptName](req.body)
-  console.log('return', result)
-  res.send(result);
+  try {
+    console.log('run script:', req.params.scriptName)
+    const result = await gas[req.params.scriptName](req.body)
+    res.send(result);
+  } catch (e) {
+    console.error('gas runtime error', e)
+    res.status(500).send({message: 'gas error'});
+  }
 })
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 })

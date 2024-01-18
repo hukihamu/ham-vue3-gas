@@ -7,7 +7,6 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "types": ["google-apps-script"],
     "resolveJsonModule": true,

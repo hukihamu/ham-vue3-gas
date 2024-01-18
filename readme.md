@@ -2,6 +2,7 @@
 ※alpha版のため、動作保証できません。
 ## TODO 
 - apps scriptのmock
+- envの利用
 - NotionClientの未実装関数
 ## How to use
 1. create project folder

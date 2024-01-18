@@ -42,7 +42,10 @@ function useScripts() {
                 // TODO 環境変数
                 return fetch("http://localhost:3001/".concat(name.toString()), {
                     method: 'post',
-                    body: JSON.stringify(args)
+                    body: JSON.stringify(args),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                 }).then(function (it) { return it.json(); }).then(function (it) { return JSON.parse(it.json); });
             }
         }

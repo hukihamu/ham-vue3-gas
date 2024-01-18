@@ -78,7 +78,10 @@ function useScripts<T extends BaseScriptType>() {
                 // TODO 環境変数
                 return fetch(`http://localhost:3001/${name.toString()}`, {
                     method: 'post',
-                    body: JSON.stringify(args)
+                    body: JSON.stringify(args),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                 }).then(it => it.json()).then(it => JSON.parse(it.json))
             }
         }

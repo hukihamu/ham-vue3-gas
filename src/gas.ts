@@ -29,7 +29,10 @@ type GasAppOptions = {
 function createGasApp(options: CreateOptions = {}): GasAppOptions {
   global.doGet = () => {
     const gasHtml = HtmlService.createHtmlOutputFromFile(options.htmlFileName ?? 'index')
-    const htmlOutput = options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    const htmlOutput = options.editHtmlOutput
+      ? options.editHtmlOutput(gasHtml)
+      : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     if (options.onDoGet) options.onDoGet(htmlOutput)
     return htmlOutput
   }

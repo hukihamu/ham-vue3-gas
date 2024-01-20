@@ -40,7 +40,10 @@ function createGasApp(options) {
     global.doGet = function () {
         var _a;
         var gasHtml = HtmlService.createHtmlOutputFromFile((_a = options.htmlFileName) !== null && _a !== void 0 ? _a : 'index');
-        var htmlOutput = options.editHtmlOutput ? options.editHtmlOutput(gasHtml) : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1');
+        var htmlOutput = options.editHtmlOutput
+            ? options.editHtmlOutput(gasHtml)
+            : gasHtml.addMetaTag('viewport', 'width=device-width, initial-scale=1')
+                .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
         if (options.onDoGet)
             options.onDoGet(htmlOutput);
         return htmlOutput;

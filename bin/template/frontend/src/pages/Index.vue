@@ -2,7 +2,7 @@
 import {ref} from 'vue'
 import HelloWorld from '@/components/GasSample.vue'
 
-const {counter} = ref(0)
+const counter = ref(0)
 </script>
 
 <template>

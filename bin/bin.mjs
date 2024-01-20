@@ -13,6 +13,7 @@ fsExtra.copySync(path.join(__dirname, 'template/.clasp.json'), path.join(rootPat
 let isGithubPages = false
 const matchGithubPages = ['--github-pages', '-gp']
 const args = process.argv.slice(2).filter(it => {
+  console.log(it)
   if (matchGithubPages.includes(it)) {
     isGithubPages = true
     return false

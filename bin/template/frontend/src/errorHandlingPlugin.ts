@@ -1,5 +1,5 @@
 import {App} from 'vue'
-import {router} from '@/router.ts'
+import {router} from '@/router'
 
 export const errorHandlingPlugin = {
     install(app: App<Element>) {

@@ -33,6 +33,7 @@ function createGasRouter(routes) {
 function useScripts() {
     return {
         send: function (name, args) {
+            var _a, _b;
             if (window.google) {
                 return new Promise(function (resolve, reject) {
                     var run = window.google.script.run
@@ -48,8 +49,9 @@ function useScripts() {
             }
             else {
                 // dev server
-                // TODO 環境変数
-                return fetch("http://localhost:3001/".concat(name.toString()), {
+                // @ts-ignore
+                var gasDevURL = (_b = (_a = import.meta.env) === null || _a === void 0 ? void 0 : _a.GAS_DEV_URL) !== null && _b !== void 0 ? _b : 'http://localhost:3001';
+                return fetch("".concat(gasDevURL, "/").concat(name.toString()), {
                     method: 'post',
                     body: JSON.stringify(args),
                     headers: {

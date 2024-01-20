@@ -23,7 +23,6 @@ module.exports = {
       "@": path.resolve(__dirname, 'src')
     }
   },
-
   module: {
     rules: [
       {
@@ -31,9 +30,6 @@ module.exports = {
         loader: "ts-loader",
       }
     ],
-  },
-  watchOptions: {
-    ignored: /node_modules/,
   },
   plugins: [
     new GasPlugin(),

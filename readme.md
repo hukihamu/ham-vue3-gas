@@ -9,10 +9,13 @@
 2. move to project folder
 3. install
 ```powershell
-npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <project-name?>
+npm exec -y git+https://github.com/hukihamu/ham-vue3-gas.git <project-name?> [options?]
 ```
 4. `.clasp.json`の`scriptId`をデプロイ先のスクリプトIDに変更する
 5. enjoy(^^♪)
+### Options
+- `--github-pages` or `-gp`: GithubPages用のdocsフォルダを生成 docs/env.jsにgasのDeployIdを入れることで利用可能  
+(`clasp deployments`で確認可能)
 
 
 ## How to develop
@@ -40,6 +43,13 @@ npm run build-frontend:watch
 npm run build-backend:watch
 npm run push:watch
 ```
+
+## Environment
+### frontend
+- GAS_DEV_URL: {desc: dev-backendのURL, default: 'http://localhost:3001' }
+### backend
+- PORT: {desc: dev-backendのポート, default: 3001}
+- SERVICE_URL: {desc: ScriptApp.getService().getUrl()の値, default: 'http://localhost:3001/dev' }
 ## Usage Example
 ### 各データ管理の特徴
 - Notion

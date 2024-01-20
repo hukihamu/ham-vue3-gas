@@ -162,9 +162,6 @@ function useProperties() {
         }
     };
 }
-/**
- * @deprecated 正式リリース時に削除
- */
 var NotionClient = /** @class */ (function () {
     function NotionClient(authToken, urlFetchApp) {
         var _this = this;

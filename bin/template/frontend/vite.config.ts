@@ -15,10 +15,7 @@ export default defineConfig({
         vuetify({autoImport: true}),
     ],
     server: {
-        port: 3000,
-        watch: {
-            usePolling: true
-        }
+        port: 3000
     },
     resolve: {
         alias: {

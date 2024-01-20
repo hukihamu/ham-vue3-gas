@@ -100,9 +100,6 @@ type PageUpdatePropertiesParams = {
     icon?: any;
     cover?: any;
 };
-/**
- * @deprecated 正式リリース時に削除
- */
 export declare class NotionClient {
     private readonly _apiBaseUrl;
     private readonly _authToken;

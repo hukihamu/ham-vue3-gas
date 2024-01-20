@@ -170,9 +170,6 @@ type PageUpdatePropertiesParams = {
   cover?: any
 }
 
-/**
- * @deprecated 正式リリース時に削除
- */
 export class NotionClient {
   // TODO https://www.notion.so/api/v3/loadPageChunk
 // {

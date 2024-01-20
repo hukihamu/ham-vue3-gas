@@ -83,8 +83,9 @@ function useScripts<T extends BaseScriptType>() {
                 })
             } else {
                 // dev server
-                // TODO 環境変数
-                return fetch(`http://localhost:3001/${name.toString()}`, {
+                // @ts-ignore
+                const gasDevURL = import.meta.env?.GAS_DEV_URL ?? 'http://localhost:3001'
+                return fetch(`${gasDevURL}/${name.toString()}`, {
                     method: 'post',
                     body: JSON.stringify(args),
                     headers: {

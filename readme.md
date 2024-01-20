@@ -130,7 +130,10 @@ npm run push:watch
 - src/index.ts
   - backendのエントリーポイント
   - `createGasApp` でgasのインスタンスを生成する
-    -  appsScriptの各APIを利用する場合は`options`の`useGasAPI`を指定する
+    - 引数`options`で値を指定できる
+      - `editHtmlOutput`のデフォ値は以下の通り(editHtmlOutputを設定すると、デフォ値はなくなります)
+        - `.addMetaTag('viewport', 'width=device-width, initial-scale=1')`
+        - `.setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)`
     - frontendの関数を利用する場合は`useScripts`を指定する
     - spreadsheetをDBライクに利用する場合は`useSpreadsheetDB`を指定する
     - ※`global`変数に値を入れる記述をしないと、gasの関数が実行されない(例: `global.gasSample = wrapperScript('gasSample')`)

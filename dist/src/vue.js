@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 export { createGasRouter, useScripts };
-function createGasRouter(routes) {
+function createGasRouter(routes, onAfterEach) {
     var router = createRouter({
         history: createWebHistory(),
         routes: routes
@@ -11,10 +11,8 @@ function createGasRouter(routes) {
             return route.fullPath !== '/userCodeAppPanel';
         });
         router.afterEach(function (route) {
-            window.top.postMessage({
-                type: 'afterEach',
-                route: route,
-            });
+            if (onAfterEach)
+                onAfterEach(route);
             window.google.script.history.replace(undefined, route.query, route.path);
         });
         window.google.script.url.getLocation(function (location) {

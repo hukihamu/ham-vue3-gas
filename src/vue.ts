@@ -1,5 +1,5 @@
 import {App, Component, createApp, SetupContext} from 'vue'
-import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHistory, RouteLocationNormalized, Router, RouteRecordRaw} from 'vue-router'
 import {BaseScriptType} from './share'
 
 export {createGasRouter, useScripts}
@@ -29,7 +29,6 @@ declare namespace window {
             }
         }
     }
-    const top: any
 }
 type CreateOptions = {
     usePlugin?: (app: App<Element>) => App<Element>
@@ -37,7 +36,7 @@ type CreateOptions = {
     vueMainScript?: (context: SetupContext) => any
     vueMainTemplate?: string
 }
-function createGasRouter(routes: RouteRecordRaw[]) {
+function createGasRouter(routes: RouteRecordRaw[], onAfterEach?: (route: RouteLocationNormalized) => void) {
 
     const router = createRouter({
         history: createWebHistory(),
@@ -49,10 +48,7 @@ function createGasRouter(routes: RouteRecordRaw[]) {
             return route.fullPath !== '/userCodeAppPanel'
         })
         router.afterEach(route => {
-            window.top.postMessage({
-                type: 'afterEach',
-                route,
-            })
+            if (onAfterEach) onAfterEach(route)
             window.google.script.history.replace(undefined, route.query, route.path)
         })
         window.google.script.url.getLocation(location => {

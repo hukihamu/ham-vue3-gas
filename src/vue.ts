@@ -50,7 +50,10 @@ function createGasRouter(routes: RouteRecordRaw[]) {
         router.afterEach(route => {
             window.google.script.history.replace(undefined, route.query, route.path)
             try {
-                window.top?.postMessage(JSON.stringify(route), '*')
+                window.top?.postMessage({
+                    type: 'after-each',
+                    value: JSON.stringify(route),
+                }, '*')
             } catch (e) {
                 console.warn('post message to top error', e)
             }

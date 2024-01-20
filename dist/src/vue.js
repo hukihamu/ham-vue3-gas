@@ -13,7 +13,10 @@ function createGasRouter(routes) {
             var _a;
             window.google.script.history.replace(undefined, route.query, route.path);
             try {
-                (_a = window.top) === null || _a === void 0 ? void 0 : _a.postMessage(JSON.stringify(route), '*');
+                (_a = window.top) === null || _a === void 0 ? void 0 : _a.postMessage({
+                    type: 'after-each',
+                    value: JSON.stringify(route),
+                }, '*');
             }
             catch (e) {
                 console.warn('post message to top error', e);

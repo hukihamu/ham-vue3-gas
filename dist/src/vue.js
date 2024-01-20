@@ -1,19 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router';
 export { createGasRouter, useScripts };
-function createGasRouter(routes, onAfterEach) {
+function createGasRouter(routes) {
     var router = createRouter({
         history: createWebHistory(),
         routes: routes
     });
     if (window.google) {
-        var userCodeAppPanel_1 = router.beforeEach(function (route) {
-            userCodeAppPanel_1();
+        router.beforeEach(function (route) {
             return route.fullPath !== '/userCodeAppPanel';
         });
         router.afterEach(function (route) {
-            if (onAfterEach)
-                onAfterEach(route);
+            var _a;
             window.google.script.history.replace(undefined, route.query, route.path);
+            try {
+                (_a = window.top) === null || _a === void 0 ? void 0 : _a.postMessage(JSON.stringify(route), '*');
+            }
+            catch (e) {
+                console.warn('post message to top error', e);
+            }
         });
         window.google.script.url.getLocation(function (location) {
             var path = location.hash ? location.hash : '/';

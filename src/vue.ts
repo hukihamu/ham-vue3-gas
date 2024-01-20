@@ -29,6 +29,7 @@ declare namespace window {
             }
         }
     }
+    const top: any
 }
 type CreateOptions = {
     usePlugin?: (app: App<Element>) => App<Element>
@@ -36,20 +37,23 @@ type CreateOptions = {
     vueMainScript?: (context: SetupContext) => any
     vueMainTemplate?: string
 }
-function createGasRouter(routes: RouteRecordRaw[], onAfterEach?: (route: RouteLocationNormalized) => void) {
+function createGasRouter(routes: RouteRecordRaw[]) {
 
     const router = createRouter({
         history: createWebHistory(),
         routes
     })
     if (window.google) {
-        const userCodeAppPanel = router.beforeEach(route => {
-            userCodeAppPanel()
+        router.beforeEach(route => {
             return route.fullPath !== '/userCodeAppPanel'
         })
         router.afterEach(route => {
-            if (onAfterEach) onAfterEach(route)
             window.google.script.history.replace(undefined, route.query, route.path)
+            try {
+                window.top?.postMessage(JSON.stringify(route), '*')
+            } catch (e) {
+                console.warn('post message to top error', e)
+            }
         })
         window.google.script.url.getLocation(location => {
             const path = location.hash ? location.hash : '/'

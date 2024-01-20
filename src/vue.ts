@@ -29,6 +29,7 @@ declare namespace window {
             }
         }
     }
+    const top: any
 }
 type CreateOptions = {
     usePlugin?: (app: App<Element>) => App<Element>
@@ -48,6 +49,10 @@ function createGasRouter(routes: RouteRecordRaw[]) {
             return route.fullPath !== '/userCodeAppPanel'
         })
         router.afterEach(route => {
+            window.top.postMessage({
+                type: 'afterEach',
+                route,
+            })
             window.google.script.history.replace(undefined, route.query, route.path)
         })
         window.google.script.url.getLocation(location => {

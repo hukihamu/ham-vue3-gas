@@ -11,12 +11,14 @@ export const errorHandlingPlugin = {
         // Vue.js以外のエラー
         window.addEventListener('error', (event) => {
             handler('other', event)
+            event.stopPropagation()
             event.preventDefault()
         })
 
         // Promise経由で呼び出されるエラー(Promise.reject)
         window.addEventListener('unhandledrejection', (event) => {
             handler('promise', event.reason)
+            event.stopPropagation()
             event.preventDefault()
         })
     }

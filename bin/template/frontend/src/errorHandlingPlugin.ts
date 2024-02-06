@@ -10,7 +10,7 @@ export const errorHandlingPlugin = {
 
         // Vue.js以外のエラー
         window.addEventListener('error', (event) => {
-            handler('other', event.error)
+            handler('other', event)
             event.preventDefault()
         })
 

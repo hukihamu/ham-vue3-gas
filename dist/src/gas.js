@@ -568,4 +568,46 @@ export function spreadsheetCache(spreadsheetId, spreadsheetApp, expirationInSeco
         }
     };
 }
+/*--------------------------------------------------------------------------------------------------------------------*/
+/**
+ * Dispatches an update event by recording the current timestamp in a specified row
+ * within a "cache" sheet of a given spreadsheet.
+ * If the "cache" sheet does not exist, it will be created.
+ *
+ * @param {string} spreadsheetId - The ID of the spreadsheet to update.
+ * @param {GoogleAppsScript.Spreadsheet.SpreadsheetApp} spreadsheetApp - The SpreadsheetApp instance to be used.
+ * @param {number} updateEventRowNumber - The row number in the "cache" sheet where the timestamp should be updated.
+ * @return {void}
+ */
+export function dispatchUpdateEvent(spreadsheetId, spreadsheetApp, updateEventRowNumber) {
+    var spreadsheet = spreadsheetApp.openById(spreadsheetId);
+    var tempSheet = spreadsheet.getSheetByName('cache');
+    var sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache');
+    var range = sheet.getRange(updateEventRowNumber, 1, 1, 1);
+    range.setValue(Date.now());
+}
+/**
+ * Checks for an update event in a specified row of a cache sheet in a spreadsheet.
+ * Retries the check with an interval of 10 seconds up to 24 times.
+ *
+ * @param {string} spreadsheetId - The ID of the spreadsheet to be accessed.
+ * @param {GoogleAppsScript.Spreadsheet.SpreadsheetApp} spreadsheetApp - The SpreadsheetApp to be used.
+ * @param {number} finalUpdateTimestamp - The final timestamp to compare update events against.
+ * @param {number} updateEventRowNumber - The row number where the update event is checked.
+ * @return {number | undefined} - Returns the value of the update event if it is greater than the finalUpdateTimestamp; otherwise, returns undefined.
+ */
+export function checkUpdateEvent(spreadsheetId, spreadsheetApp, finalUpdateTimestamp, updateEventRowNumber) {
+    var spreadsheet = spreadsheetApp.openById(spreadsheetId);
+    var tempSheet = spreadsheet.getSheetByName('cache');
+    var sheet = tempSheet ? tempSheet : spreadsheet.insertSheet().setName('cache');
+    for (var i = 0; i < 24; i++) {
+        var range = sheet.getRange(updateEventRowNumber, 1, 1, 1);
+        var value = range.getValue();
+        if (value > finalUpdateTimestamp) {
+            return value;
+        }
+        Utilities.sleep(10000);
+    }
+    return undefined;
+}
 //# sourceMappingURL=gas.js.map

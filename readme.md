@@ -66,6 +66,7 @@ npm run push:watch
     - Query周りは遅く弱い
     - Spreadsheetの関数を使えばgas側の処理が減る
     - CRUDの回数制限がない
+    - 事前にGASで「initTables」関数の手動実行が必要
   - 役割
     - 大量のCRUDを行う
     - 全件取得を行わない運用
@@ -162,6 +163,11 @@ npm run push:watch
   - 環境変数を利用するためのラッパー変数
   - `useProperties`で作成可能
   - **※PropertiesServiceを利用しているため、gasの制限に注意**
+- UpdateEvent
+  - 変更イベントの発火と確認を行う
+  - `dispatchUpdateEvent`でイベント発火
+  - `checkUpdateEvent`でイベントを5分間確認
+  - frontendからcheckUpdateEventを実行し、変更可否の返答を受領後に再度checkUpdateEvent実行を繰り返す
 ##### SpreadsheetDBとSpreadsheetCacheの違い
 - 保管方法
   - SpreadsheetDB > 1データ1セルで保管する
